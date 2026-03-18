@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PortfolioLite — Private Wealth Tracker for Indian Investors</title>
+  <meta name="description" content="Track SIPs, gold, FDs and stocks on your phone. No login. No cloud. No data leaks. ₹49 one-time." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, 'Inter', system-ui, sans-serif;
+      background: #0A0F1E;
+      color: #F1F5F9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px;
+    }
+    .badge {
+      background: rgba(0, 212, 180, 0.12);
+      border: 1px solid rgba(0, 212, 180, 0.3);
+      color: #00D4B4;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+      margin-bottom: 28px;
+    }
+    h1 {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.15;
+      max-width: 620px;
+      margin-bottom: 20px;
+    }
+    h1 span { color: #00D4B4; }
+    .subtitle {
+      font-size: 17px;
+      color: #94A3B8;
+      text-align: center;
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+      text-align: left;
+    }
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 15px;
+      color: #CBD5E1;
+    }
+    .feature-icon {
+      color: #00D4B4;
+      font-size: 16px;
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+    .email-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 16px;
+    }
+    .email-input {
+      width: 100%;
+      padding: 14px 20px;
+      background: #1a2236;
+      border: 1px solid #2a3456;
+      border-radius: 10px;
+      color: #F1F5F9;
+      font-size: 16px;
+      outline: none;
+    }
+    .email-input:focus { border-color: #00D4B4; }
+    .email-input::placeholder { color: #475569; }
+    .cta-button {
+      width: 100%;
+      padding: 14px 28px;
+      background: #00D4B4;
+      color: #0A0F1E;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .cta-button:hover { opacity: 0.88; }
+    .social-proof {
+      font-size: 13px;
+      color: #475569;
+      margin-bottom: 60px;
+    }
+    .social-proof span { color: #00D4B4; font-weight: 600; }
+    .divider {
+      width: 100%;
+      max-width: 520px;
+      border: none;
+      border-top: 1px solid #1e2a40;
+      margin-bottom: 48px;
+    }
+    .why-section h2 {
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 28px;
+      color: #F1F5F9;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 640px;
+      margin-bottom: 60px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1e2a40;
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .card-icon { font-size: 24px; margin-bottom: 10px; }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .card-desc { font-size: 13px; color: #64748B; line-height: 1.6; }
+    .pricing-box {
+      background: #111827;
+      border: 1px solid #00D4B4;
+      border-radius: 16px;
+      padding: 28px 32px;
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      margin-bottom: 64px;
+    }
+    .pricing-label { font-size: 12px; color: #64748B; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .pricing-price { font-size: 42px; font-weight: 800; color: #F5A623; margin-bottom: 4px; }
+    .pricing-sub { font-size: 14px; color: #475569; margin-bottom: 20px; }
+    .pricing-features { text-align: left; display: flex; flex-direction: column; gap: 8px; }
+    .pricing-feature { font-size: 14px; color: #CBD5E1; }
+    .footer {
+      font-size: 12px;
+      color: #334155;
+      text-align: center;
+    }
+    .footer a { color: #475569; }
+  </style>
+</head>
+<body>
+
+  <div class="badge">🛡️ Zero Cloud &nbsp;·&nbsp; Zero Bank Link &nbsp;·&nbsp; Zero Login</div>
+
+  <h1>Track your wealth.<br><span>Without giving away your secrets.</span></h1>
+
+  <p class="subtitle">
+    PortfolioLite lets you log SIPs, gold, FDs, stocks, and crypto — all on your 
+    phone, entirely offline. No account. No bank link. Your data never leaves your device.
+  </p>
+
+  <div class="features">
+    <div class="feature"><span class="feature-icon">✓</span> SIP + Gold + FD + Stocks + PPF in one screen</div>
+    <div class="feature"><span class="feature-icon">✓</span> Net worth in ₹ — always visible, always accurate</div>
+    <div class="feature"><span class="feature-icon">✓</span> Works offline forever — no internet needed</div>
+    <div class="feature"><span class="feature-icon">✓</span> Biometric lock — only you can open it</div>
+    <div class="feature"><span class="feature-icon">✓</span> CSV export — your data, always portable</div>
+    <div class="feature"><span class="feature-icon">✓</span> No ads. No subscription. No surprises.</div>
+  </div>
+
+  <!-- REPLACE action URL with your Mailchimp form action URL -->
+  <form class="email-form" action="YOUR_MAILCHIMP_ACTION_URL" method="post" target="_blank">
+    <input class="email-input" type="email" name="EMAIL" placeholder="your@email.com" required />
+    <button class="cta-button" type="submit">Join the Beta — Get Early Access</button>
+  </form>
+
+  <p class="social-proof">
+    Join <span id="counter">47</span> others waiting · Android launch Q2 2026
+  </p>
+
+  <hr class="divider" />
+
+  <div class="why-section">
+    <h2>Why PortfolioLite?</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <div class="card-title">Zero Permissions</div>
+        <div class="card-desc">No camera, no contacts, no location. Only biometric if you choose it. We can't see your data.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📴</div>
+        <div class="card-title">Truly Offline</div>
+        <div class="card-desc">Works without internet after install. No cloud sync. No server. No breach possible.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <div class="card-title">One Payment</div>
+        <div class="card-desc">₹49 once and it's yours forever. No subscription. No price increase. No features locked later.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <div class="card-title">All Asset Types</div>
+        <div class="card-desc">Mutual funds, stocks, gold (physical + ETF), FDs, PPF, NPS, crypto, real estate — all in one view.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pricing-box">
+    <div class="pricing-label">One-Time Price</div>
+    <div class="pricing-price">₹49</div>
+    <div class="pricing-sub">Unlock once. Yours forever.</div>
+    <div class="pricing-features">
+      <div class="pricing-feature">✓ Unlimited assets</div>
+      <div class="pricing-feature">✓ Net worth timeline chart</div>
+      <div class="pricing-feature">✓ CSV export</div>
+      <div class="pricing-feature">✓ All future updates</div>
+      <div class="pricing-feature">✓ No subscription ever</div>
+    </div>
+  </div>
+
+  <p class="footer">
+    Built by an indie developer in India 🇮🇳 &nbsp;·&nbsp;
+    <a href="privacy-policy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    Questions? <a href="mailto:hello@portfoliolite.in">hello@portfoliolite.in</a>
+  </p>
+
+  <script>
+    // Manually update this number every few days to show growing interest
+    // Or connect to a real counter via a free service like CountAPI
+    document.getElementById('counter').textContent = '47';
+  </script>
+
+</body>
+</html>
