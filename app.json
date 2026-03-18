@@ -3,6 +3,7 @@
     "name": "PortfolioLite",
     "slug": "portfoliolite",
     "version": "1.0.0",
+    "scheme": "portfoliolite",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -14,7 +15,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.umairiitd.portfoliolite"
+      "bundleIdentifier": "com.yourname.portfoliolite"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,19 +23,16 @@
         "backgroundColor": "#0A0F1E"
       },
       "package": "com.yourname.portfoliolite",
-      "permissions": [
-        "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
-      ],
+      "permissions": ["USE_BIOMETRIC", "USE_FINGERPRINT"],
       "versionCode": 1
     },
-    "extra": {
-      "rcKey": "$EXPO_PUBLIC_RC_KEY",
-      "posthogKey": "$EXPO_PUBLIC_POSTHOG_KEY"
-    },
     "plugins": [
+      "expo-router",
       "expo-sqlite",
       "expo-local-authentication"
-    ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
