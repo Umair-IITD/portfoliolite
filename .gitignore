@@ -39,3 +39,9 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+.env
+.env.local
+*.keystore
+android/app/google-services.json
+ios/GoogleService-Info.plist
