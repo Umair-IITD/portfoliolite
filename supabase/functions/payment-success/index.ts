@@ -129,13 +129,12 @@ serve(async (req) => {
           font-size: 12px;
           color: #64748B;
         }
-
-        ${status === 'pending' ? `
-          <script>
-            setTimeout(() => { window.location.reload(); }, 2000);
-          </script>
-        ` : ''}
       </style>
+      ${status === 'pending' ? `
+        <script>
+          setTimeout(() => { window.location.reload(); }, 2000);
+        </script>
+      ` : ''}
     </head>
     <body>
       <div class="card">
