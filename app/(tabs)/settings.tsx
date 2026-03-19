@@ -13,6 +13,7 @@ import { deleteAllData, exportToCSV } from "../../src/db/database";
 import { useAssets } from "../../src/hooks/useAssets";
 import { useBiometrics } from "../../src/hooks/useBiometrics";
 import { usePurchases } from "../../src/hooks/usePurchases";
+import { useRouter } from "expo-router";
 
 const C = {
   navy: "#0A0F1E", card: "#111827", card2: "#1a2236",
@@ -47,16 +48,18 @@ function Row({
 }
 
 export default function SettingsScreen() {
-  const { assets, refresh }                       = useAssets();
+  const router = useRouter();
+  const { assets, refresh }                         = useAssets();
   const { isAvailable, isEnabled, enable, disable } = useBiometrics();
-  const { isPro, purchasePro, restorePro }         = usePurchases();
+  const { isPro, isLoading, purchasePro, restorePro } = usePurchases();
 
+  // ── Biometric toggle ─────────────────────────────────────────────
   async function handleBiometricToggle(val: boolean) {
     if (val) {
       if (!isAvailable) {
         Alert.alert(
           "Not available",
-          "No biometrics enrolled on this device. Please set up fingerprint or face unlock in your phone's Settings first."
+          "No biometrics enrolled on this device. Please set up fingerprint or face unlock in your phone Settings first."
         );
         return;
       }
@@ -73,11 +76,25 @@ export default function SettingsScreen() {
     }
   }
 
+  // ── CSV export — Pro only ────────────────────────────────────────
   async function handleExportCSV() {
+    if (!isPro) {
+      Alert.alert(
+        "Pro Feature",
+        "CSV export is available in PortfolioLite Pro. Unlock for ₹49 — one-time, no subscription.",
+        [
+          { text: "Not now", style: "cancel" },
+          { text: "Unlock Pro", onPress: () => router.push("/paywall") },
+        ]
+      );
+      return;
+    }
+
     if (assets.length === 0) {
       Alert.alert("Nothing to export", "Add some assets first.");
       return;
     }
+
     try {
       const csv     = exportToCSV();
       const fileUri = FileSystem.documentDirectory + "portfoliolite_export.csv";
@@ -87,21 +104,22 @@ export default function SettingsScreen() {
       const canShare = await Sharing.isAvailableAsync();
       if (canShare) {
         await Sharing.shareAsync(fileUri, {
-          mimeType: "text/csv",
+          mimeType:    "text/csv",
           dialogTitle: "Export PortfolioLite data",
         });
       } else {
         Alert.alert("Saved", `CSV saved to:\n${fileUri}`);
       }
-    } catch (e) {
+    } catch {
       Alert.alert("Export failed", "Please try again.");
     }
   }
 
+  // ── Delete all data ──────────────────────────────────────────────
   function confirmDeleteAll() {
     Alert.alert(
       "Delete all data",
-      "This permanently erases ALL assets, history, and settings. This cannot be undone.",
+      "This permanently erases ALL assets, history, and settings from this device. Cannot be undone.",
       [
         { text: "Cancel", style: "cancel" },
         {
@@ -113,15 +131,35 @@ export default function SettingsScreen() {
     );
   }
 
+  // ── Unlock Pro from settings ─────────────────────────────────────
   async function handleUnlockPro() {
     Alert.alert(
-      "Unlock Pro",
-      "RevenueCat payment will be connected in the next build. Tap OK to unlock for testing.",
+      "Unlock PortfolioLite Pro",
+      "Choose how to pay:",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "OK (Test)", onPress: () => purchasePro() },
+        {
+          text: "Pay via UPI — ₹45",
+          onPress: () => router.push("/paywall"),
+        },
+        {
+          text: "Pay via Google Play — ₹49",
+          onPress: async () => {
+            await purchasePro();
+          },
+        },
       ]
     );
+  }
+
+  // ── Restore purchase ─────────────────────────────────────────────
+  async function handleRestore() {
+    try {
+      await restorePro();
+      Alert.alert("Restored!", "PortfolioLite Pro has been restored.");
+    } catch {
+      Alert.alert("Not found", "No previous purchase was found for this account.");
+    }
   }
 
   return (
@@ -137,34 +175,39 @@ export default function SettingsScreen() {
         </View>
 
         {/* Pro status banner */}
-        <View style={[s.proBanner, { borderColor: isPro ? C.gold : C.border }]}>
+        <TouchableOpacity
+          style={[s.proBanner, { borderColor: isPro ? C.gold : C.border }]}
+          onPress={isPro ? undefined : handleUnlockPro}
+          activeOpacity={isPro ? 1 : 0.75}
+          disabled={isLoading}
+        >
           {isPro
-            ? <Unlock color={C.gold} size={16} />
-            : <Lock   color={C.text3} size={16} />
+            ? <Unlock color={C.gold} size={18} />
+            : <Lock   color={C.text3} size={18} />
           }
-          <View style={{ flex: 1, marginLeft: 10 }}>
+          <View style={{ flex: 1, marginLeft: 12 }}>
             <Text style={[s.proTitle, { color: isPro ? C.gold : C.text2 }]}>
-              {isPro ? "PortfolioLite Pro" : "Free Tier"}
+              {isPro ? "PortfolioLite Pro ✓" : "Free Tier"}
             </Text>
             <Text style={s.proSub}>
               {isPro
                 ? "Unlimited assets · CSV export · History chart"
-                : `${assets.length}/5 assets used · Tap to unlock`}
+                : `${assets.length}/5 assets · Tap to unlock Pro`}
             </Text>
           </View>
           {!isPro && (
-            <TouchableOpacity style={s.upgradeBtn} onPress={handleUnlockPro}>
-              <Text style={s.upgradeBtnText}>Unlock ₹49</Text>
-            </TouchableOpacity>
+            <View style={s.upgradeBtn}>
+              <Text style={s.upgradeBtnText}>₹49</Text>
+            </View>
           )}
-        </View>
+        </TouchableOpacity>
 
         {/* Security */}
         <Text style={s.sectionLabel}>SECURITY</Text>
         <View style={s.section}>
           <Row
             icon={<Fingerprint color={isAvailable ? C.text2 : C.text3} size={18} />}
-            label={isAvailable ? "Biometric Lock" : "Biometric Lock (not available)"}
+            label={isAvailable ? "Biometric Lock" : "Biometric Lock (unavailable)"}
             disabled={!isAvailable}
             right={
               <Switch
@@ -182,10 +225,12 @@ export default function SettingsScreen() {
         <Text style={s.sectionLabel}>DATA</Text>
         <View style={s.section}>
           <Row
-            icon={<Download color={C.text2} size={18} />}
-            label={`Export as CSV (${assets.length} assets)`}
+            icon={<Download color={isPro ? C.text2 : C.text3} size={18} />}
+            label={isPro
+              ? `Export as CSV (${assets.length} assets)`
+              : "Export as CSV — Pro feature"
+            }
             onPress={handleExportCSV}
-            disabled={!isPro && assets.length === 0}
           />
           <Row
             icon={<Trash2 color={C.red} size={18} />}
@@ -195,15 +240,20 @@ export default function SettingsScreen() {
           />
         </View>
 
-        {/* Pro */}
+        {/* Pro section — only shown when not pro */}
         {!isPro && (
           <>
             <Text style={s.sectionLabel}>PRO</Text>
             <View style={s.section}>
               <Row
                 icon={<Unlock color={C.text2} size={18} />}
+                label="Unlock Pro — ₹49 one-time"
+                onPress={handleUnlockPro}
+              />
+              <Row
+                icon={<ChevronRight color={C.text3} size={18} />}
                 label="Restore previous purchase"
-                onPress={() => restorePro()}
+                onPress={handleRestore}
               />
             </View>
           </>
@@ -231,22 +281,22 @@ export default function SettingsScreen() {
 }
 
 const s = StyleSheet.create({
-  safe:         { flex: 1, backgroundColor: C.navy },
-  title:        { fontSize: 22, fontWeight: "700", color: C.text1, paddingHorizontal: 18, paddingVertical: 14 },
-  zeroBadge:    { flexDirection: "row", alignItems: "center", gap: 8, marginHorizontal: 18, marginBottom: 12, backgroundColor: "rgba(0,212,180,0.08)", borderWidth: 1, borderColor: "rgba(0,212,180,0.2)", borderRadius: 10, padding: 12 },
-  zeroText:     { fontSize: 12, color: C.teal, fontWeight: "500", flex: 1 },
-  proBanner:    { flexDirection: "row", alignItems: "center", marginHorizontal: 18, marginBottom: 16, backgroundColor: C.card, borderRadius: 12, padding: 14, borderWidth: 1 },
-  proTitle:     { fontSize: 14, fontWeight: "700" },
-  proSub:       { fontSize: 12, color: C.text3, marginTop: 2 },
-  upgradeBtn:   { backgroundColor: C.gold, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8 },
-  upgradeBtnText: { fontSize: 12, fontWeight: "700", color: "#0A0F1E" },
-  sectionLabel: { fontSize: 11, fontWeight: "600", letterSpacing: 1, color: C.text3, textTransform: "uppercase", paddingHorizontal: 18, paddingBottom: 6, paddingTop: 4 },
-  section:      { marginHorizontal: 18, marginBottom: 14, backgroundColor: C.card, borderRadius: 14, overflow: "hidden", borderWidth: 1, borderColor: C.border },
-  row:          { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: C.border },
-  rowIcon:      { width: 28, alignItems: "center", marginRight: 10 },
-  rowLabel:     { flex: 1, fontSize: 14, color: C.text1 },
-  version:      { fontSize: 13, color: C.text3 },
-  footer:       { alignItems: "center", paddingTop: 24, gap: 4 },
-  footerText:   { fontSize: 12, color: C.text3 },
-  footerSub:    { fontSize: 11, color: "#1e2a3a" },
+  safe:           { flex: 1, backgroundColor: C.navy },
+  title:          { fontSize: 22, fontWeight: "700", color: C.text1, paddingHorizontal: 18, paddingVertical: 14 },
+  zeroBadge:      { flexDirection: "row", alignItems: "center", gap: 8, marginHorizontal: 18, marginBottom: 12, backgroundColor: "rgba(0,212,180,0.08)", borderWidth: 1, borderColor: "rgba(0,212,180,0.2)", borderRadius: 10, padding: 12 },
+  zeroText:       { fontSize: 12, color: C.teal, fontWeight: "500", flex: 1 },
+  proBanner:      { flexDirection: "row", alignItems: "center", marginHorizontal: 18, marginBottom: 16, backgroundColor: C.card, borderRadius: 12, padding: 14, borderWidth: 1.5 },
+  proTitle:       { fontSize: 14, fontWeight: "700" },
+  proSub:         { fontSize: 12, color: C.text3, marginTop: 2 },
+  upgradeBtn:     { backgroundColor: C.gold, paddingHorizontal: 12, paddingVertical: 7, borderRadius: 8 },
+  upgradeBtnText: { fontSize: 13, fontWeight: "700", color: "#0A0F1E" },
+  sectionLabel:   { fontSize: 11, fontWeight: "600", letterSpacing: 1, color: C.text3, textTransform: "uppercase", paddingHorizontal: 18, paddingBottom: 6, paddingTop: 4 },
+  section:        { marginHorizontal: 18, marginBottom: 14, backgroundColor: C.card, borderRadius: 14, overflow: "hidden", borderWidth: 1, borderColor: C.border },
+  row:            { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: C.border },
+  rowIcon:        { width: 28, alignItems: "center", marginRight: 10 },
+  rowLabel:       { flex: 1, fontSize: 14, color: C.text1 },
+  version:        { fontSize: 13, color: C.text3 },
+  footer:         { alignItems: "center", paddingTop: 24, gap: 4 },
+  footerText:     { fontSize: 12, color: C.text3 },
+  footerSub:      { fontSize: 11, color: "#1e2a3a" },
 });

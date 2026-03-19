@@ -3,31 +3,33 @@ import { useFocusEffect } from "expo-router";
 import {
   Asset, AssetInput, AssetType,
   getAllAssets, insertAsset, updateAsset,
-  deleteAsset, getAssetCount, saveSnapshot,
+  deleteAsset, saveSnapshot,
 } from "../db/database";
 
-// ─── Allocation helper (used by Dashboard chart) ──────────────────
+// ─── Constants ────────────────────────────────────────────────────
+export const FREE_LIMIT = 5;
 
+// ─── Type meta ────────────────────────────────────────────────────
 export interface AllocationItem {
-  type: AssetType;
-  label: string;
-  value: number;
+  type:       AssetType;
+  label:      string;
+  value:      number;
   percentage: number;
-  color: string;
+  color:      string;
 }
 
 const TYPE_META: Record<AssetType, { label: string; color: string }> = {
-  mutual_fund:  { label: "Mutual Funds", color: "#00D4B4" },
-  stock:        { label: "Stocks",       color: "#F97316" },
-  gold:         { label: "Gold",         color: "#F5A623" },
-  fd:           { label: "Fixed Deposit",color: "#22C55E" },
-  crypto:       { label: "Crypto",       color: "#3B82F6" },
-  ppf:          { label: "PPF",          color: "#A855F7" },
-  real_estate:  { label: "Real Estate",  color: "#64748B" },
-  cash:         { label: "Cash",         color: "#94A3B8" },
+  mutual_fund:  { label: "Mutual Funds",  color: "#00D4B4" },
+  stock:        { label: "Stocks",        color: "#F97316" },
+  gold:         { label: "Gold",          color: "#F5A623" },
+  fd:           { label: "Fixed Deposit", color: "#22C55E" },
+  crypto:       { label: "Crypto",        color: "#3B82F6" },
+  ppf:          { label: "PPF",           color: "#A855F7" },
+  real_estate:  { label: "Real Estate",   color: "#64748B" },
+  cash:         { label: "Cash",          color: "#94A3B8" },
 };
 
-// ─── Portfolio calculation helpers ───────────────────────────────
+// ─── Pure calculation helpers ─────────────────────────────────────
 
 export function calcNetWorth(assets: Asset[]): number {
   return assets.reduce((sum, a) => sum + a.quantity * a.currentPrice, 0);
@@ -64,19 +66,29 @@ export function formatINR(n: number): string {
   return "\u20B9" + Math.round(n).toLocaleString("en-IN");
 }
 
+// ─── Pro gate helpers ─────────────────────────────────────────────
+
+export function canAddAsset(count: number, isPro: boolean): boolean {
+  return isPro || count < FREE_LIMIT;
+}
+
+export function canExportCSV(isPro: boolean): boolean {
+  return isPro;
+}
+
 // ─── Main hook ────────────────────────────────────────────────────
 
 interface UseAssetsReturn {
-  assets:       Asset[];
-  isLoading:    boolean;
-  error:        string | null;
-  netWorth:     number;
-  allocation:   AllocationItem[];
-  assetCount:   number;
-  addAsset:     (input: AssetInput) => Promise<Asset>;
-  editAsset:    (id: string, updates: Partial<AssetInput>) => Promise<void>;
-  removeAsset:  (id: string) => Promise<void>;
-  refresh:      () => void;
+  assets:      Asset[];
+  isLoading:   boolean;
+  error:       string | null;
+  netWorth:    number;
+  allocation:  AllocationItem[];
+  assetCount:  number;
+  addAsset:    (input: AssetInput) => Promise<Asset>;
+  editAsset:   (id: string, updates: Partial<AssetInput>) => Promise<void>;
+  removeAsset: (id: string) => Promise<void>;
+  refresh:     () => void;
 }
 
 export function useAssets(): UseAssetsReturn {
@@ -91,9 +103,9 @@ export function useAssets(): UseAssetsReturn {
       setAssets(data);
       setError(null);
 
-      // Save a snapshot whenever assets are loaded (daily fingerprint)
+      // Save snapshot on load if there are assets
       if (data.length > 0) {
-        const total = calcNetWorth(data);
+        const total     = calcNetWorth(data);
         const breakdown: Record<string, number> = {};
         for (const a of data) {
           breakdown[a.type] = (breakdown[a.type] ?? 0) + a.quantity * a.currentPrice;
@@ -108,10 +120,8 @@ export function useAssets(): UseAssetsReturn {
     }
   }, []);
 
-  // Load on mount
   useEffect(() => { load(); }, [load]);
 
-  // Reload every time screen comes into focus
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   const addAsset = useCallback(async (input: AssetInput): Promise<Asset> => {
@@ -145,12 +155,4 @@ export function useAssets(): UseAssetsReturn {
     removeAsset,
     refresh:    load,
   };
-}
-
-// ─── Pro gate helper ──────────────────────────────────────────────
-
-export const FREE_LIMIT = 5;
-
-export function canAddAsset(count: number, isPro: boolean): boolean {
-  return isPro || count < FREE_LIMIT;
 }

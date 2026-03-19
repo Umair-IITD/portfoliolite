@@ -1,148 +1,3 @@
-// import {
-//   View, Text, ScrollView, TouchableOpacity, StyleSheet, TextInput,
-// } from "react-native";
-// import { SafeAreaView } from "react-native-safe-area-context";
-// import { useRouter } from "expo-router";
-// import {
-//   Plus, Search, TrendingUp, Circle, Landmark,
-//   BarChart2, Zap, Shield, Home, Wallet, Lock,
-// } from "lucide-react-native";
-
-// const C = {
-//   navy:"#0A0F1E", card:"#111827", card2:"#1a2236",
-//   teal:"#00D4B4", blue:"#3B82F6", gold:"#F5A623",
-//   green:"#22C55E", red:"#EF4444", orange:"#F97316",
-//   purple:"#A855F7", text1:"#F1F5F9", text2:"#94A3B8",
-//   text3:"#64748B", border:"rgba(255,255,255,0.07)",
-// };
-
-// const MOCK_HOLDINGS = [
-//   { id:"1", name:"HDFC Flexi Cap SIP",  type:"mutual_fund",  value:594000,  pnlPct:18.8, color:C.teal,   locked:false },
-//   { id:"2", name:"Nippon ELSS Fund",    type:"mutual_fund",  value:210000,  pnlPct:20.0, color:C.teal,   locked:false },
-//   { id:"3", name:"Digital Gold",        type:"gold",         value:371800,  pnlPct:6.2,  color:C.gold,   locked:false },
-//   { id:"4", name:"SBI FD — 7.2%",      type:"fd",           value:297350,  pnlPct:18.9, color:C.green,  locked:false },
-//   { id:"5", name:"PPF Account",         type:"ppf",          value:180000,  pnlPct:7.1,  color:C.purple, locked:false },
-//   { id:"6", name:"Infosys Ltd",         type:"stock",        value:78600,   pnlPct:-4.2, color:C.orange, locked:true  },
-//   { id:"7", name:"TCS Ltd",             type:"stock",        value:135600,  pnlPct:12.5, color:C.orange, locked:true  },
-// ];
-
-// function typeIcon(type: string) {
-//   const sz = 16;
-//   switch (type) {
-//     case "mutual_fund":  return <TrendingUp color={C.teal}   size={sz} />;
-//     case "gold":         return <Circle     color={C.gold}   size={sz} />;
-//     case "fd":           return <Landmark   color={C.green}  size={sz} />;
-//     case "ppf":          return <Shield     color={C.purple} size={sz} />;
-//     case "crypto":       return <Zap        color={C.orange} size={sz} />;
-//     case "real_estate":  return <Home       color={C.text3}  size={sz} />;
-//     case "cash":         return <Wallet     color={C.text3}  size={sz} />;
-//     default:             return <BarChart2  color={C.blue}   size={sz} />;
-//   }
-// }
-
-// function formatINR(n: number) {
-//   return "₹" + n.toLocaleString("en-IN");
-// }
-
-// export default function HoldingsScreen() {
-//   const router = useRouter();
-//   return (
-//     <SafeAreaView style={s.safe}>
-//       <View style={s.header}>
-//         <Text style={s.title}>Holdings</Text>
-//         <TouchableOpacity style={s.addBtn} onPress={() => router.push("/add-asset")}>
-//           <Plus color={C.teal} size={20} />
-//         </TouchableOpacity>
-//       </View>
-
-//       <View style={s.searchWrap}>
-//         <Search color={C.text3} size={15} />
-//         <TextInput style={s.searchInput} placeholder="Search assets…" placeholderTextColor={C.text3} />
-//       </View>
-
-//       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-//         {MOCK_HOLDINGS.map((h) =>
-//           h.locked ? (
-//             <TouchableOpacity key={h.id} style={s.lockedRow} onPress={() => router.push("/paywall")} activeOpacity={0.8}>
-//               <View style={s.lockedContent}>
-//                 <View style={[s.dot, { backgroundColor: h.color }]} />
-//                 <View style={s.iconWrap}>{typeIcon(h.type)}</View>
-//                 <View style={{ flex: 1 }}>
-//                   <Text style={[s.name, { opacity: 0.2 }]}>{"██████████"}</Text>
-//                   <Text style={[s.typeLabel, { opacity: 0.2 }]}>{"██████"}</Text>
-//                 </View>
-//                 <View style={{ alignItems: "flex-end" }}>
-//                   <Text style={[s.value, { opacity: 0.2 }]}>{"₹██,███"}</Text>
-//                 </View>
-//               </View>
-//               <View style={s.unlockBar}>
-//                 <Lock color={C.blue} size={12} />
-//                 <Text style={s.unlockText}>Tap to unlock Pro</Text>
-//               </View>
-//             </TouchableOpacity>
-//           ) : (
-//             <View key={h.id} style={s.row}>
-//               <View style={[s.dot, { backgroundColor: h.color }]} />
-//               <View style={s.iconWrap}>{typeIcon(h.type)}</View>
-//               <View style={{ flex: 1 }}>
-//                 <Text style={s.name}>{h.name}</Text>
-//                 <Text style={s.typeLabel}>{h.type.replace(/_/g, " ")}</Text>
-//               </View>
-//               <View style={{ alignItems: "flex-end" }}>
-//                 <Text style={s.value}>{formatINR(h.value)}</Text>
-//                 <Text style={[s.pnl, { color: h.pnlPct >= 0 ? C.green : C.red }]}>
-//                   {h.pnlPct >= 0 ? "+" : ""}{h.pnlPct}%
-//                 </Text>
-//               </View>
-//             </View>
-//           )
-//         )}
-
-//         <TouchableOpacity style={s.upsellBanner} onPress={() => router.push("/paywall")}>
-//           <Lock color={C.blue} size={14} />
-//           <Text style={s.upsellText}>Unlock Pro — ₹49 once for unlimited assets</Text>
-//         </TouchableOpacity>
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// }
-
-// const s = StyleSheet.create({
-//   safe:         { flex:1, backgroundColor:C.navy },
-//   header:       { flexDirection:"row", justifyContent:"space-between", alignItems:"center", paddingHorizontal:18, paddingTop:14, paddingBottom:8 },
-//   title:        { fontSize:22, fontWeight:"700", color:C.text1 },
-//   addBtn:       { width:36, height:36, borderRadius:18, backgroundColor:C.card2, alignItems:"center", justifyContent:"center" },
-//   searchWrap:   { flexDirection:"row", alignItems:"center", gap:8, marginHorizontal:18, marginBottom:14, backgroundColor:C.card, borderRadius:10, paddingHorizontal:12, paddingVertical:10, borderWidth:1, borderColor:C.border },
-//   searchInput:  { flex:1, color:C.text1, fontSize:14 },
-//   row:          { flexDirection:"row", alignItems:"center", gap:10, paddingHorizontal:18, paddingVertical:14, borderBottomWidth:1, borderBottomColor:C.border },
-//   dot:          { width:8, height:8, borderRadius:4 },
-//   iconWrap:     { width:34, height:34, borderRadius:8, backgroundColor:C.card2, alignItems:"center", justifyContent:"center" },
-//   name:         { fontSize:14, color:C.text1, fontWeight:"500" },
-//   typeLabel:    { fontSize:11, color:C.text3, marginTop:2, textTransform:"capitalize" },
-//   value:        { fontSize:14, fontWeight:"700", color:C.gold },
-//   pnl:          { fontSize:12, marginTop:2 },
-//   lockedRow:    { borderBottomWidth:1, borderBottomColor:C.border },
-//   lockedContent:{ flexDirection:"row", alignItems:"center", gap:10, paddingHorizontal:18, paddingVertical:14 },
-//   unlockBar:    { flexDirection:"row", alignItems:"center", justifyContent:"center", gap:6, paddingVertical:7, backgroundColor:"rgba(59,130,246,0.10)", borderTopWidth:1, borderTopColor:"rgba(59,130,246,0.15)" },
-//   unlockText:   { fontSize:12, color:C.blue, fontWeight:"600" },
-//   upsellBanner: { flexDirection:"row", alignItems:"center", justifyContent:"center", gap:8, margin:18, paddingVertical:14, backgroundColor:"rgba(59,130,246,0.08)", borderRadius:12, borderWidth:1, borderColor:"rgba(59,130,246,0.2)" },
-//   upsellText:   { fontSize:13, color:C.blue, fontWeight:"500" },
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import {
   View, Text, ScrollView, TouchableOpacity,
   StyleSheet, TextInput, Alert,
@@ -155,7 +10,8 @@ import {
 } from "lucide-react-native";
 import {
   useAssets, calcPnL, formatINR, FREE_LIMIT,
-} from ".../../src/hooks/useAssets";
+} from "../../src/hooks/useAssets";
+import { usePurchases } from "../../src/hooks/usePurchases";
 import { Asset, AssetType } from "../../src/db/database";
 import { useState } from "react";
 
@@ -188,13 +44,12 @@ function typeIcon(type: AssetType) {
 }
 
 function AssetRow({
-  asset,
-  onDelete,
+  asset, onDelete,
 }: {
   asset: Asset;
   onDelete: (id: string, name: string) => void;
 }) {
-  const pnl = calcPnL(asset);
+  const pnl        = calcPnL(asset);
   const currentVal = asset.quantity * asset.currentPrice;
 
   return (
@@ -223,20 +78,29 @@ function AssetRow({
   );
 }
 
+function LockedRow({ onUnlock }: { onUnlock: () => void }) {
+  return (
+    <TouchableOpacity style={s.lockedRow} onPress={onUnlock} activeOpacity={0.85}>
+      <Lock color={C.blue} size={14} />
+      <Text style={s.lockedText}>Locked — </Text>
+      <Text style={s.lockedCta}>Unlock Pro to view this asset</Text>
+    </TouchableOpacity>
+  );
+}
+
 export default function HoldingsScreen() {
-  const router    = useRouter();
+  const router                          = useRouter();
   const { assets, removeAsset, netWorth } = useAssets();
-  const [query, setQuery] = useState("");
-  const isPro = false;
+  const { isPro }                       = usePurchases();
+  const [query, setQuery]               = useState("");
 
   const filtered = query.trim()
-    ? assets.filter((a) =>
-        a.name.toLowerCase().includes(query.toLowerCase())
-      )
+    ? assets.filter((a) => a.name.toLowerCase().includes(query.toLowerCase()))
     : assets;
 
-  const freeAssets   = filtered.slice(0, FREE_LIMIT);
-  const lockedAssets = filtered.slice(FREE_LIMIT);
+  // Split into visible (free) and locked (beyond free limit for non-pro users)
+  const visibleAssets = isPro ? filtered : filtered.slice(0, FREE_LIMIT);
+  const lockedAssets  = isPro ? [] : filtered.slice(FREE_LIMIT);
 
   function confirmDelete(id: string, name: string) {
     Alert.alert(
@@ -244,11 +108,7 @@ export default function HoldingsScreen() {
       `Remove "${name}" from your portfolio?`,
       [
         { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => removeAsset(id),
-        },
+        { text: "Delete", style: "destructive", onPress: () => removeAsset(id) },
       ]
     );
   }
@@ -273,10 +133,7 @@ export default function HoldingsScreen() {
         />
       </View>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 100 }}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
         {assets.length === 0 ? (
           <View style={s.empty}>
             <Text style={s.emptyText}>No assets yet.</Text>
@@ -284,35 +141,18 @@ export default function HoldingsScreen() {
           </View>
         ) : (
           <>
-            {freeAssets.map((a) => (
+            {visibleAssets.map((a) => (
               <AssetRow key={a.id} asset={a} onDelete={confirmDelete} />
             ))}
 
-            {/* Locked rows (assets beyond free limit) */}
-            {!isPro && lockedAssets.length > 0 && (
-              <>
-                {lockedAssets.map((a) => (
-                  <TouchableOpacity
-                    key={a.id}
-                    style={s.lockedRow}
-                    onPress={() => router.push("/paywall")}
-                  >
-                    <Lock color={C.blue} size={14} />
-                    <Text style={s.lockedText}>Locked — </Text>
-                    <Text style={s.lockedCta}>Unlock Pro to view</Text>
-                  </TouchableOpacity>
-                ))}
-              </>
-            )}
-
-            {/* Pro users see everything */}
-            {isPro && lockedAssets.map((a) => (
-              <AssetRow key={a.id} asset={a} onDelete={confirmDelete} />
+            {lockedAssets.map((a) => (
+              <LockedRow key={a.id} onUnlock={() => router.push("/paywall")} />
             ))}
 
-            {/* Total */}
             <View style={s.totalRow}>
-              <Text style={s.totalLabel}>Portfolio Total</Text>
+              <Text style={s.totalLabel}>
+                {isPro ? "Portfolio Total" : `Total (${FREE_LIMIT} free assets)`}
+              </Text>
               <Text style={s.totalValue}>{formatINR(netWorth)}</Text>
             </View>
           </>
