@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#0A0F1E"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.yourname.portfoliolite"
@@ -23,16 +25,23 @@
         "backgroundColor": "#0A0F1E"
       },
       "package": "com.yourname.portfoliolite",
-      "permissions": ["USE_BIOMETRIC", "USE_FINGERPRINT"],
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ],
       "versionCode": 1
     },
     "plugins": [
       "expo-router",
       "expo-sqlite",
-      "expo-local-authentication"
+      "expo-local-authentication",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }
