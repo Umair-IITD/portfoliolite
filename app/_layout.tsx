@@ -1,71 +1,96 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import { View, ActivityIndicator } from "react-native";
-import { initDatabase } from "../src/db/database";
+import React, { useEffect, memo } from "react";
+import { View, StyleSheet } from "react-native";
+import { initDatabase, getSetting } from "../src/db/database";
 import { useBiometrics } from "../src/hooks/useBiometrics";
+import { useState } from "react";
+import { PurchasesProvider } from "../src/context/PurchasesContext";
 import BiometricGateScreen from "./biometric-gate";
+
+const LockOverlay = memo(({ isAvailable, authenticate }: { isAvailable: boolean, authenticate: () => Promise<boolean> }) => (
+  <View style={[StyleSheet.absoluteFill, { zIndex: 998 }]}>
+    <BiometricGateScreen
+      isAvailable={isAvailable}
+      authenticate={authenticate}
+      onAuthenticated={() => {}}
+      onSkip={() => {}}
+    />
+  </View>
+));
 
 function AppGate({ children }: { children: React.ReactNode }) {
   const {
     isAvailable, isEnabled, isAuthenticated,
     isChecking, authenticate,
   } = useBiometrics();
+  
+  // 1. If we are still checking local DB for settings, show nothing (Prevents Flash)
+  // 2. If biometrics are enabled AND user isn't authenticated, show lock
+  const showLock = isEnabled && !isAuthenticated;
 
-  // Show loader while checking biometric settings
   if (isChecking) {
-    return (
-      <View style={{ flex: 1, backgroundColor: "#0A0F1E", alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator color="#00D4B4" size="large" />
-      </View>
-    );
+    return <View style={{ flex: 1, backgroundColor: "#0A0F1E" }} />;
   }
 
-  // Show lock screen if enabled and not yet authenticated
-  if (isEnabled && !isAuthenticated) {
-    return (
-      <BiometricGateScreen
-        isAvailable={isAvailable}
-        authenticate={authenticate}
-        onAuthenticated={() => {/* state updates inside hook */}}
-        onSkip={() => {/* skip allowed if device has no biometrics */}}
-      />
-    );
-  }
-
-  return <>{children}</>;
+  return (
+    <View style={{ flex: 1, backgroundColor: "#0A0F1E" }}>
+      {children}
+      {showLock && <LockOverlay isAvailable={isAvailable} authenticate={authenticate} />}
+    </View>
+  );
 }
 
 export default function RootLayout() {
+  const [isReady, setIsReady] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   useEffect(() => {
-    initDatabase().catch((e) =>
-      console.error("[RootLayout] DB init failed:", e)
-    );
+    async function init() {
+      try {
+        await initDatabase();
+        const done = getSetting("onboarding_complete");
+        setShowOnboarding(done !== "true");
+      } catch (e) {
+        console.error("[RootLayout] init failed:", e);
+      } finally {
+        setIsReady(true);
+      }
+    }
+    init();
   }, []);
 
+  if (!isReady) {
+    return <View style={{ flex: 1, backgroundColor: "#0A0F1E" }} />;
+  }
+
   return (
-    <AppGate>
-      <StatusBar style="light" backgroundColor="#0A0F1E" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: "#0A0F1E" },
-        }}
-      >
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen
-          name="add-asset"
-          options={{ presentation: "modal", animation: "slide_from_bottom" }}
-        />
-        <Stack.Screen
-          name="paywall"
-          options={{ presentation: "modal", animation: "slide_from_bottom" }}
-        />
-        <Stack.Screen
-          name="timeline"
-          options={{ presentation: "modal", animation: "slide_from_bottom" }}
-        />
-      </Stack>
-    </AppGate>
+    <PurchasesProvider>
+      <StatusBar style="light" backgroundColor="#0A0F1E" translucent={false} />
+      <AppGate>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: "#0A0F1E" },
+          }}
+          initialRouteName={showOnboarding ? "onboarding" : "(tabs)"}
+        >
+          <Stack.Screen name="onboarding" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen
+            name="add-asset"
+            options={{ animation: "slide_from_bottom" }}
+          />
+          <Stack.Screen
+            name="paywall"
+            options={{ animation: "slide_from_bottom" }}
+          />
+          <Stack.Screen
+            name="privacy"
+            options={{ animation: "slide_from_bottom" }}
+          />
+        </Stack>
+      </AppGate>
+    </PurchasesProvider>
   );
 }

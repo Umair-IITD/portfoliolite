@@ -1,106 +1,108 @@
-// Supabase Edge Function: generate-code
-// Triggered by Razorpay webhook after successful payment
-// Generates a unique 8-digit unlock code and stores it in DB
-
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { createHmac } from "https://deno.land/std@0.177.0/node/crypto.ts";
-
 const SUPABASE_URL     = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RAZORPAY_SECRET  = Deno.env.get("RAZORPAY_WEBHOOK_SECRET")!;
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE);
-
-// Generate a random 8-digit numeric code
 function generateCode(): string {
-  const digits = Math.floor(10000000 + Math.random() * 90000000);
-  return digits.toString();
+  return Math.floor(10000000 + Math.random() * 90000000).toString();
 }
 
-// Verify Razorpay webhook signature
-function verifySignature(body: string, signature: string): boolean {
-  const expected = createHmac("sha256", RAZORPAY_SECRET)
-    .update(body)
-    .digest("hex");
-  return expected === signature;
+async function verifySignature(body: string, signature: string): Promise<boolean> {
+  if (!signature || !RAZORPAY_SECRET) return false;
+  
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(RAZORPAY_SECRET);
+  const bodyData = encoder.encode(body);
+  
+  const hmacKey = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  
+  const signatureBuffer = await crypto.subtle.sign(
+    "HMAC",
+    hmacKey,
+    bodyData
+  );
+  
+  const hashArray = Array.from(new Uint8Array(signatureBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  
+  return hashHex === signature;
 }
 
 Deno.serve(async (req: Request) => {
-  // Only accept POST
-  if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
-  }
+  if (req.method !== "POST") return new Response("Use POST", { status: 405 });
 
   try {
-    const rawBody   = await req.text();
+    const rawBody = await req.text();
     const signature = req.headers.get("x-razorpay-signature") ?? "";
 
-    // Verify the webhook is genuinely from Razorpay
-    if (!verifySignature(rawBody, signature)) {
-      console.error("[generate-code] Invalid Razorpay signature");
+    // VERIFY SIGNATURE (Secure)
+    const isValid = await verifySignature(rawBody, signature);
+    if (!isValid) {
+      console.error("[generate-code] Invalid signature. Check your RAZORPAY_WEBHOOK_SECRET.");
       return new Response("Unauthorized", { status: 401 });
     }
 
     const event = JSON.parse(rawBody);
+    if (event.event !== "payment.captured") return new Response("Ignored", { status: 200 });
 
-    // Only process successful payment events
-    if (event.event !== "payment.captured") {
-      return new Response("Ignored event", { status: 200 });
-    }
+    const entity = event.payload?.payment?.entity;
+    const paymentId = entity?.id;
+    const amount    = entity?.amount;
+    const code      = generateCode();
 
-    const payment    = event.payload.payment.entity;
-    const paymentId  = payment.id as string;
-    const amount     = payment.amount as number; // in paise
+    if (!paymentId) return new Response("No payment ID", { status: 400 });
 
-    // Check we haven't already generated a code for this payment
-    const { data: existing } = await supabase
-      .from("unlock_codes")
-      .select("code")
-      .eq("payment_id", paymentId)
-      .single();
-
-    if (existing) {
+    // ── Check Idempotency ───────────────────────────────────────────
+    const checkResp = await fetch(`${SUPABASE_URL}/rest/v1/unlock_codes?payment_id=eq.${paymentId}`, {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_SERVICE,
+        "Authorization": `Bearer ${SUPABASE_SERVICE}`,
+      }
+    });
+    const existing = await checkResp.json();
+    if (existing.length > 0) {
       console.log("[generate-code] Code already exists for payment:", paymentId);
-      return new Response(JSON.stringify({ code: existing.code }), {
-        headers: { "Content-Type": "application/json" },
+      return new Response(JSON.stringify({ success: true, code: existing[0].code }), {
+        headers: { "Content-Type": "application/json" }
       });
     }
 
-    // Generate unique code (retry if collision)
-    let code = generateCode();
-    let attempts = 0;
-    while (attempts < 5) {
-      const { data: collision } = await supabase
-        .from("unlock_codes")
-        .select("id")
-        .eq("code", code)
-        .single();
-      if (!collision) break;
-      code = generateCode();
-      attempts++;
-    }
-
-    // Store in DB
-    const { error } = await supabase.from("unlock_codes").insert({
-      code,
-      payment_id: paymentId,
-      amount,
-      status: "active",
+    // ── Insert New Code ─────────────────────────────────────────────
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/unlock_codes`, {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_SERVICE,
+        "Authorization": `Bearer ${SUPABASE_SERVICE}`,
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify({
+        code,
+        payment_id: paymentId,
+        amount,
+        status: "active"
+      })
     });
 
-    if (error) {
-      console.error("[generate-code] DB insert error:", error);
-      return new Response("DB error", { status: 500 });
+    if (!resp.ok) {
+      const err = await resp.text();
+      console.error("DB Insert Failed:", err);
+      return new Response(err, { status: 500 });
     }
 
-    console.log("[generate-code] Code generated:", code, "for payment:", paymentId);
+    console.log("[generate-code] Success! Code generated:", code);
     return new Response(JSON.stringify({ success: true, code }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" }
     });
 
   } catch (e) {
-    console.error("[generate-code] Unexpected error:", e);
-    return new Response("Internal error", { status: 500 });
+    console.error("Internal Error:", e.message);
+    return new Response("Error: " + e.message, { status: 500 });
   }
 });

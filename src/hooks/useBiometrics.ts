@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import * as LocalAuthentication from "expo-local-authentication";
 import { getSetting, setSetting } from "../db/database";
 
@@ -74,7 +74,7 @@ export function useBiometrics(): UseBiometricsReturn {
     setIsAuthenticated(false);
   }, []);
 
-  return {
+  return useMemo(() => ({
     isAvailable,
     isEnabled,
     isAuthenticated,
@@ -82,5 +82,5 @@ export function useBiometrics(): UseBiometricsReturn {
     authenticate,
     enable,
     disable,
-  };
+  }), [isAvailable, isEnabled, isAuthenticated, isChecking, authenticate, enable, disable]);
 }

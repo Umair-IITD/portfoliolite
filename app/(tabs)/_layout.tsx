@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { LayoutDashboard, List, Settings2 } from "lucide-react-native";
+import { LayoutDashboard, List, Settings2, LineChart } from "lucide-react-native";
 
 export default function TabsLayout() {
   return (
@@ -31,6 +31,13 @@ export default function TabsLayout() {
         options={{
           title: "Holdings",
           tabBarIcon: ({ color }) => <List color={color} size={22} />,
+        }}
+      />
+      <Tabs.Screen
+        name="timeline"
+        options={{
+          title: "Timeline",
+          tabBarIcon: ({ color }) => <LineChart color={color} size={22} />,
         }}
       />
       <Tabs.Screen

@@ -21,3 +21,17 @@ CREATE INDEX IF NOT EXISTS idx_unlock_codes_payment_id ON unlock_codes(payment_i
 
 -- Auto-expire codes older than 30 days (run as a cron if needed)
 -- For now codes are permanent — user can redeem any time after paying
+
+-- 🔒 SECURITY HARDENING: Row Level Security (RLS)
+ALTER TABLE unlock_codes ENABLE ROW LEVEL SECURITY;
+
+-- Block all public/anon access (Default)
+-- Edge Functions bypass RLS because they use the Service Role Key.
+-- This prevents the 'Anon Key Leak' vulnerability.
+
+CREATE POLICY "Service Role Only" 
+ON unlock_codes 
+FOR ALL 
+TO service_role 
+USING (true) 
+WITH CHECK (true);

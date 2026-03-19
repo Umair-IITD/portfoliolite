@@ -25,6 +25,8 @@
         "backgroundColor": "#0A0F1E"
       },
       "package": "com.yourname.portfoliolite",
+      "softwareKeyboardLayoutMode": "adjustResize",
+      "newArchEnabled": true,
       "permissions": [
         "USE_BIOMETRIC",
         "USE_FINGERPRINT"
@@ -42,6 +44,7 @@
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
-    }
+    },
+    "newArchEnabled": true
   }
 }

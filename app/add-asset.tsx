@@ -1,14 +1,15 @@
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  TextInput, ScrollView, Alert, KeyboardAvoidingView, Platform,
+  TextInput, ScrollView, KeyboardAvoidingView, Platform,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { X } from "lucide-react-native";
 import { useState } from "react";
 import { useAssets, canAddAsset, formatINR, FREE_LIMIT } from "../src/hooks/useAssets";
 import { usePurchases } from "../src/hooks/usePurchases";
 import { AssetType } from "../src/db/database";
+import { ConfirmModal } from "../src/components/ui/ConfirmModal";
 
 const C = {
   navy: "#0A0F1E", card: "#111827", card2: "#1a2236",
@@ -30,6 +31,7 @@ const ASSET_TYPES: { key: AssetType; label: string }[] = [
 
 export default function AddAssetScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { addAsset, assetCount } = useAssets();
   const { isPro } = usePurchases();
 
@@ -42,13 +44,18 @@ export default function AddAssetScreen() {
 
   const currentValue = (parseFloat(qty) || 1) * (parseFloat(curPrice) || 0);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "", isDanger: false });
+
   async function handleSave() {
     if (!name.trim()) {
-      Alert.alert("Missing name", "Please enter an asset name.");
+      setModalContent({ title: "Missing name", message: "Please enter an asset name.", isDanger: true });
+      setModalVisible(true);
       return;
     }
     if (!curPrice || parseFloat(curPrice) <= 0) {
-      Alert.alert("Missing price", "Please enter the current price.");
+      setModalContent({ title: "Missing price", message: "Please enter the current price.", isDanger: true });
+      setModalVisible(true);
       return;
     }
     if (!canAddAsset(assetCount, isPro)) {
@@ -68,15 +75,19 @@ export default function AddAssetScreen() {
       });
       router.back();
     } catch (e) {
-      Alert.alert("Error", "Could not save asset. Please try again.");
+      setModalContent({ title: "Error", message: "Could not save asset. Please try again.", isDanger: true });
+      setModalVisible(true);
     } finally {
       setIsSaving(false);
     }
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <SafeAreaView style={s.safe}>
+    <KeyboardAvoidingView 
+      style={{ flex: 1 }} 
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={[s.safe, { paddingTop: insets.top }]}>
         <View style={s.handle} />
         <View style={s.header}>
           <View>
@@ -144,7 +155,17 @@ export default function AddAssetScreen() {
             <Text style={s.saveBtnText}>{isSaving ? "Saving…" : "Save Asset"}</Text>
           </TouchableOpacity>
         </ScrollView>
-      </SafeAreaView>
+      </View>
+
+      <ConfirmModal 
+        visible={modalVisible}
+        title={modalContent.title}
+        message={modalContent.message}
+        onConfirm={() => setModalVisible(false)}
+        onCancel={() => setModalVisible(false)}
+        confirmLabel="OK"
+        isDanger={modalContent.isDanger}
+      />
     </KeyboardAvoidingView>
   );
 }

@@ -9,15 +9,15 @@
 
 ## Table of Contents
 
-1. [Project Overview](#1-project-overview)
-2. [Screen Specifications](#2-screen-specifications)
-3. [SQLite Schema](#3-sqlite-schema)
-4. [TypeScript Types](#4-typescript-types)
-5. [Navigation Structure](#5-navigation-structure)
-6. [RevenueCat Setup](#6-revenuecat-setup)
-7. [Dependencies](#7-dependencies)
-8. [Folder Structure](#8-folder-structure)
-9. [README Commands](#9-readme-commands)
+12. [Project Overview](#1-project-overview)
+13. [Screen Specifications](#2-screen-specifications)
+14. [SQLite Schema](#3-sqlite-schema)
+15. [TypeScript Types](#4-typescript-types)
+16. [Navigation Structure](#5-navigation-structure)
+17. [Supabase + Razorpay Setup](#6-supabase--razorpay-setup)
+18. [Dependencies](#7-dependencies)
+19. [Folder Structure](#8-folder-structure)
+20. [README Commands](#9-readme-commands)
 
 ---
 
@@ -740,16 +740,6 @@ export function RootNavigator() {
 
 ---
 
-## 6. RevenueCat Setup
-
-### 6.1 Google Play Console — Create the IAP Product
-
-1. Open [Google Play Console](https://play.google.com/console) → select **PortfolioLite** app.
-2. Navigate to **Monetize → Products → In-app products**.
-3. Click **Create product**.
-4. Fill in:
-
-| Field | Value |
 |---|---|
 | Product ID | `portfoliolite_pro_49` |
 | Product type | **Non-consumable** (one-time purchase) |

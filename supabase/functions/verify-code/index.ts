@@ -30,7 +30,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { code } = await req.json() as { code: string };
+    const { code, deviceId } = await req.json() as { code: string; deviceId?: string };
 
     if (!code || typeof code !== "string" || code.length !== 8) {
       return new Response(
@@ -42,20 +42,13 @@ Deno.serve(async (req: Request) => {
     // Look up the code
     const { data, error } = await supabase
       .from("unlock_codes")
-      .select("id, status, amount")
+      .select("id, status, amount, device_id")
       .eq("code", code.trim())
       .single();
 
     if (error || !data) {
       return new Response(
         JSON.stringify({ valid: false, error: "Code not found" }),
-        { status: 200, headers: corsHeaders }
-      );
-    }
-
-    if (data.status === "used") {
-      return new Response(
-        JSON.stringify({ valid: false, error: "Code already used" }),
         { status: 200, headers: corsHeaders }
       );
     }
@@ -67,13 +60,42 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Code is valid — mark as used
-    await supabase
+    // --- Device-Tied Restore Logic ---
+    if (data.status === "used") {
+      // If code was previously used on THIS device, allow "Restore"
+      if (deviceId && data.device_id === deviceId) {
+        return new Response(
+          JSON.stringify({ valid: true, message: "Purchase restored", amount: data.amount }),
+          { status: 200, headers: corsHeaders }
+        );
+      }
+      // Otherwise, block sharing
+      return new Response(
+        JSON.stringify({ valid: false, error: "Code already used on another device" }),
+        { status: 200, headers: corsHeaders }
+      );
+    }
+
+    // --- First-time Redemption ---
+    // Code is active — mark as used and tie to this device
+    const { error: updateError } = await supabase
       .from("unlock_codes")
-      .update({ status: "used", used_at: new Date().toISOString() })
+      .update({ 
+        status: "used", 
+        used_at: new Date().toISOString(),
+        device_id: deviceId || "unknown" 
+      })
       .eq("id", data.id);
 
-    console.log("[verify-code] Code redeemed successfully:", code);
+    if (updateError) {
+      console.error("[verify-code] Update failed:", updateError);
+      return new Response(
+        JSON.stringify({ valid: false, error: "Redemption failed. Check database schema." }),
+        { status: 200, headers: corsHeaders }
+      );
+    }
+
+    console.log("[verify-code] Code redeemed and tied to device:", code, deviceId);
 
     return new Response(
       JSON.stringify({ valid: true, amount: data.amount }),

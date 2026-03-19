@@ -78,9 +78,10 @@ export async function initDatabase(): Promise<void> {
       key   TEXT PRIMARY KEY NOT NULL,
       value TEXT NOT NULL
     );
-  `);
 
-  console.log("[DB] Initialised successfully");
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('onboarding_complete', 'false');
+    INSERT OR IGNORE INTO settings (key, value) VALUES ('biometric_enabled', 'false');
+  `);
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────
