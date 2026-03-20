@@ -17,7 +17,10 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.umair.portfoliolite"
+      "bundleIdentifier": "com.umair.portfoliolite",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +32,9 @@
       "newArchEnabled": true,
       "permissions": [
         "USE_BIOMETRIC",
-        "USE_FINGERPRINT"
+        "USE_FINGERPRINT",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
       ],
       "versionCode": 1
     },
@@ -45,6 +50,14 @@
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b925711a-a34b-4692-9ef2-a57e924146ae"
+      }
+    }
   }
 }
