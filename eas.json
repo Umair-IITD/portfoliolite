@@ -1,0 +1,16 @@
+{
+  "build": {
+    "production": {
+      "enterprise": false,
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "preview": {
+      "distribution": "internal"
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
