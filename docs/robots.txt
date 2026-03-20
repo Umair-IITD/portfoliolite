@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://umair-iitd.github.io/portfoliolite/sitemap.xml

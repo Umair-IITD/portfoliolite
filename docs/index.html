@@ -1,33 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PortfolioLite — Your wealth. Your phone. Nobody else.</title>
-  <meta name="description" content="Track SIPs, gold, FDs and stocks entirely on your phone. No login. No cloud. No data leaks. ₹49 one-time." />
+  <meta name="description"
+    content="Track SIPs, gold, FDs and stocks entirely on your phone. No login. No cloud. No data leaks. ₹49 one-time." />
+  <meta name="keywords"
+    content="portfolio tracker, net worth tracker, private finance app, offline investment tracker, India wealth app, zero cloud finance" />
+  <link rel="canonical" href="https://umair-iitd.github.io/portfoliolite/" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://umair-iitd.github.io/portfoliolite/" />
   <meta property="og:title" content="PortfolioLite — Private Wealth Tracker" />
-  <meta property="og:description" content="No bank login. No cloud. Just your net worth." />
+  <meta property="og:description"
+    content="No bank login. No cloud. Just your net worth. Track your wealth privately on Android." />
+  <meta property="og:image" content="https://umair-iitd.github.io/portfoliolite/screens/og-image.png" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://umair-iitd.github.io/portfoliolite/" />
+  <meta property="twitter:title" content="PortfolioLite — Private Wealth Tracker" />
+  <meta property="twitter:description"
+    content="The only premium wealth tracker that never leaves your phone. Offline-first. Zero Cloud." />
+  <meta property="twitter:image" content="https://umair-iitd.github.io/portfoliolite/screens/og-image.png" />
+
+  <!-- Verification Placeholders (User to update) -->
+  <meta name="google-site-verification" content="ADD_YOUR_CODE_HERE" />
+  <meta name="msvalidate.01" content="ADD_YOUR_CODE_HERE" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --navy:   #0A0F1E;
-      --card:   #111827;
-      --card2:  #1a2236;
-      --teal:   #00D4B4;
-      --blue:   #3B82F6;
-      --gold:   #F5A623;
-      --green:  #22C55E;
-      --text1:  #F1F5F9;
-      --text2:  #94A3B8;
-      --text3:  #64748B;
-      --border: rgba(255,255,255,0.07);
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    html { scroll-behavior: smooth; }
+    :root {
+      --navy: #0A0F1E;
+      --card: #111827;
+      --card2: #1a2236;
+      --teal: #00D4B4;
+      --blue: #3B82F6;
+      --gold: #F5A623;
+      --green: #22C55E;
+      --text1: #F1F5F9;
+      --text2: #94A3B8;
+      --text3: #64748B;
+      --border: rgba(255, 255, 255, 0.07);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       font-family: 'DM Sans', sans-serif;
@@ -51,72 +85,122 @@
     /* ── Glow blobs ── */
     .glow-1 {
       position: fixed;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(0,212,180,0.06) 0%, transparent 70%);
-      top: -200px; left: -200px;
-      pointer-events: none; z-index: 0;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 212, 180, 0.06) 0%, transparent 70%);
+      top: -200px;
+      left: -200px;
+      pointer-events: none;
+      z-index: 0;
       animation: drift1 18s ease-in-out infinite alternate;
     }
+
     .glow-2 {
       position: fixed;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%);
-      bottom: -100px; right: -100px;
-      pointer-events: none; z-index: 0;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+      bottom: -100px;
+      right: -100px;
+      pointer-events: none;
+      z-index: 0;
       animation: drift2 22s ease-in-out infinite alternate;
     }
-    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px, 40px); } }
-    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-40px, -60px); } }
+
+    @keyframes drift1 {
+      from {
+        transform: translate(0, 0);
+      }
+
+      to {
+        transform: translate(60px, 40px);
+      }
+    }
+
+    @keyframes drift2 {
+      from {
+        transform: translate(0, 0);
+      }
+
+      to {
+        transform: translate(-40px, -60px);
+      }
+    }
 
     /* ── Nav ── */
     nav {
-      position: fixed; top: 0; left: 0; right: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 18px 5%;
-      background: rgba(10,15,30,0.7);
+      background: rgba(10, 15, 30, 0.7);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
     }
+
     .nav-logo {
       font-family: 'Syne', sans-serif;
-      font-weight: 800; font-size: 18px;
+      font-weight: 800;
+      font-size: 18px;
       color: var(--text1);
       letter-spacing: -0.5px;
     }
-    .nav-logo span { color: var(--teal); }
+
+    .nav-logo span {
+      color: var(--teal);
+    }
+
     .nav-cta {
       background: var(--teal);
       color: #0A0F1E;
       font-family: 'DM Sans', sans-serif;
-      font-weight: 600; font-size: 13px;
+      font-weight: 600;
+      font-size: 13px;
       padding: 9px 20px;
       border-radius: 8px;
-      border: none; cursor: pointer;
+      border: none;
+      cursor: pointer;
       text-decoration: none;
       transition: opacity 0.2s;
     }
-    .nav-cta:hover { opacity: 0.85; }
+
+    .nav-cta:hover {
+      opacity: 0.85;
+    }
 
     /* ── Sections ── */
-    section { position: relative; z-index: 1; }
+    section {
+      position: relative;
+      z-index: 1;
+    }
 
     /* ── Hero ── */
     .hero {
       min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       padding: 120px 5% 80px;
     }
 
     .hero-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(0,212,180,0.08);
-      border: 1px solid rgba(0,212,180,0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 212, 180, 0.08);
+      border: 1px solid rgba(0, 212, 180, 0.2);
       color: var(--teal);
-      font-size: 12px; font-weight: 500;
-      padding: 7px 16px; border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 7px 16px;
+      border-radius: 100px;
       letter-spacing: 0.5px;
       margin-bottom: 32px;
       animation: fadeUp 0.6s ease both;
@@ -132,8 +216,14 @@
       animation: fadeUp 0.7s 0.1s ease both;
       max-width: 800px;
     }
-    h1 .accent { color: var(--teal); }
-    h1 .gold-accent { color: var(--gold); }
+
+    h1 .accent {
+      color: var(--teal);
+    }
+
+    h1 .gold-accent {
+      color: var(--gold);
+    }
 
     .hero-sub {
       font-size: clamp(16px, 2vw, 20px);
@@ -153,142 +243,304 @@
     }
 
     .email-row {
-      display: flex; gap: 10px;
+      display: flex;
+      gap: 10px;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 6px 6px 6px 18px;
       transition: border-color 0.2s;
     }
-    .email-row:focus-within { border-color: rgba(0,212,180,0.4); }
+
+    .email-row:focus-within {
+      border-color: rgba(0, 212, 180, 0.4);
+    }
 
     .email-input {
       flex: 1;
-      background: none; border: none; outline: none;
+      background: none;
+      border: none;
+      outline: none;
       color: var(--text1);
       font-family: 'DM Sans', sans-serif;
       font-size: 15px;
       padding: 8px 0;
     }
-    .email-input::placeholder { color: var(--text3); }
+
+    .email-input::placeholder {
+      color: var(--text3);
+    }
 
     .submit-btn {
       background: var(--teal);
       color: #0A0F1E;
       font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 14px;
+      font-weight: 700;
+      font-size: 14px;
       padding: 12px 22px;
       border-radius: 10px;
-      border: none; cursor: pointer;
+      border: none;
+      cursor: pointer;
       white-space: nowrap;
       transition: opacity 0.2s, transform 0.1s;
       flex-shrink: 0;
     }
-    .submit-btn:hover { opacity: 0.9; }
-    .submit-btn:active { transform: scale(0.97); }
-    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+    }
+
+    .submit-btn:active {
+      transform: scale(0.97);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
     .form-meta {
-      font-size: 12px; color: var(--text3);
-      margin-top: 10px; text-align: center;
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 10px;
+      text-align: center;
     }
 
     /* Success state */
     .success-msg {
       display: none;
-      align-items: center; justify-content: center; gap: 10px;
-      background: rgba(34,197,94,0.08);
-      border: 1px solid rgba(34,197,94,0.2);
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.2);
       border-radius: 14px;
       padding: 16px 24px;
       color: var(--green);
-      font-size: 15px; font-weight: 500;
+      font-size: 15px;
+      font-weight: 500;
     }
-    .success-msg.visible { display: flex; }
-    .form-wrap.submitted .email-row { display: none; }
-    .form-wrap.submitted .form-meta { display: none; }
+
+    .success-msg.visible {
+      display: flex;
+    }
+
+    .form-wrap.submitted .email-row {
+      display: none;
+    }
+
+    .form-wrap.submitted .form-meta {
+      display: none;
+    }
 
     /* ── Trust bar ── */
     .trust-bar {
-      display: flex; align-items: center; justify-content: center;
-      flex-wrap: wrap; gap: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 24px;
       margin-top: 48px;
       animation: fadeUp 0.7s 0.4s ease both;
     }
+
     .trust-item {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; color: var(--text3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text3);
     }
-    .trust-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
 
     /* ── Phone mockup ── */
     .phone-section {
       padding: 80px 5%;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .phone-frame {
-      width: 260px; height: 540px;
+      width: 260px;
+      height: 540px;
       background: var(--card);
       border-radius: 40px;
       border: 6px solid #1a2236;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 40px 80px rgba(0,0,0,0.5);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 40px 80px rgba(0, 0, 0, 0.5);
       overflow: hidden;
       position: relative;
       flex-shrink: 0;
     }
+
     .phone-screen {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       background: var(--navy);
       padding: 20px 14px;
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
       gap: 10px;
     }
+
     .phone-header {
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 4px;
     }
-    .phone-logo { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--text1); }
-    .phone-lock { width: 14px; height: 14px; opacity: 0.4; }
+
+    .phone-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text1);
+    }
+
+    .phone-lock {
+      width: 14px;
+      height: 14px;
+      opacity: 0.4;
+    }
+
     .nw-card {
       background: var(--card2);
-      border-radius: 14px; padding: 14px;
+      border-radius: 14px;
+      padding: 14px;
       border: 1px solid var(--border);
     }
+
     .nw-badge {
-      display: flex; align-items: center; gap: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
       margin-bottom: 8px;
     }
-    .nw-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); }
-    .nw-badge-text { font-size: 8px; color: var(--teal); font-weight: 500; letter-spacing: 0.5px; }
-    .nw-label { font-size: 8px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px; }
-    .nw-amount { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--text1); letter-spacing: -1px; }
-    .nw-change { font-size: 9px; color: var(--green); margin-top: 2px; }
+
+    .nw-badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .nw-badge-text {
+      font-size: 8px;
+      color: var(--teal);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .nw-label {
+      font-size: 8px;
+      color: var(--text3);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .nw-amount {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text1);
+      letter-spacing: -1px;
+    }
+
+    .nw-change {
+      font-size: 9px;
+      color: var(--green);
+      margin-top: 2px;
+    }
+
     .chart-placeholder {
       background: var(--card2);
-      border-radius: 12px; padding: 10px 12px;
+      border-radius: 12px;
+      padding: 10px 12px;
       border: 1px solid var(--border);
     }
-    .chart-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .chart-svg { flex-shrink: 0; }
-    .chart-legend { display: flex; flex-direction: column; gap: 4px; flex: 1; }
-    .leg { display: flex; align-items: center; gap: 5px; }
-    .leg-dot { width: 5px; height: 5px; border-radius: 50%; }
-    .leg-text { font-size: 8px; color: var(--text2); }
-    .asset-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .chart-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .chart-svg {
+      flex-shrink: 0;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .leg-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+
+    .leg-text {
+      font-size: 8px;
+      color: var(--text2);
+    }
+
+    .asset-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
     .asset-row-mini {
-      display: flex; align-items: center; gap: 7px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
       padding: 7px 10px;
-      background: var(--card2); border-radius: 8px;
+      background: var(--card2);
+      border-radius: 8px;
       border: 1px solid var(--border);
     }
+
     .asset-icon-mini {
-      width: 22px; height: 22px; border-radius: 6px;
-      background: rgba(255,255,255,0.05);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
     }
-    .asset-name-mini { flex: 1; font-size: 9px; color: var(--text1); font-weight: 500; }
-    .asset-val-mini { font-size: 9px; font-weight: 700; color: var(--gold); }
+
+    .asset-name-mini {
+      flex: 1;
+      font-size: 9px;
+      color: var(--text1);
+      font-weight: 500;
+    }
+
+    .asset-val-mini {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--gold);
+    }
 
     /* ── Features ── */
     .features {
@@ -296,39 +548,68 @@
       max-width: 1100px;
       margin: 0 auto;
     }
+
     .section-label {
-      font-size: 11px; font-weight: 600; letter-spacing: 2px;
-      color: var(--teal); text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--teal);
+      text-transform: uppercase;
       margin-bottom: 12px;
     }
+
     .section-title {
       font-family: 'Syne', sans-serif;
       font-size: clamp(28px, 4vw, 44px);
-      font-weight: 800; letter-spacing: -1px;
+      font-weight: 800;
+      letter-spacing: -1px;
       margin-bottom: 48px;
       max-width: 500px;
     }
+
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
     }
+
     .feature-card {
       background: var(--card);
-      border-radius: 18px; padding: 28px;
+      border-radius: 18px;
+      padding: 28px;
       border: 1px solid var(--border);
       transition: border-color 0.2s, transform 0.2s;
     }
-    .feature-card:hover { border-color: rgba(0,212,180,0.2); transform: translateY(-2px); }
+
+    .feature-card:hover {
+      border-color: rgba(0, 212, 180, 0.2);
+      transform: translateY(-2px);
+    }
+
     .feature-icon {
-      width: 44px; height: 44px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 20px;
       margin-bottom: 16px;
     }
-    .feature-title { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-    .feature-desc { font-size: 14px; color: var(--text2); line-height: 1.65; font-weight: 300; }
+
+    .feature-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.65;
+      font-weight: 300;
+    }
 
     /* ── Pricing ── */
     .pricing {
@@ -337,48 +618,109 @@
       margin: 0 auto;
       text-align: center;
     }
+
     .price-card {
       background: var(--card);
-      border-radius: 24px; padding: 40px;
+      border-radius: 24px;
+      padding: 40px;
       border: 1px solid var(--teal);
-      position: relative; overflow: hidden;
+      position: relative;
+      overflow: hidden;
     }
+
     .price-card::before {
       content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
       background: linear-gradient(90deg, transparent, var(--teal), transparent);
     }
+
     .price-badge {
       display: inline-block;
-      background: rgba(0,212,180,0.1);
-      color: var(--teal); font-size: 11px; font-weight: 600;
-      padding: 5px 12px; border-radius: 100px;
-      letter-spacing: 1px; text-transform: uppercase;
+      background: rgba(0, 212, 180, 0.1);
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 100px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       margin-bottom: 20px;
     }
+
     .price-amount {
       font-family: 'Syne', sans-serif;
-      font-size: 72px; font-weight: 800;
-      color: var(--gold); letter-spacing: -3px;
+      font-size: 72px;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: -3px;
       line-height: 1;
     }
-    .price-amount sup { font-size: 28px; vertical-align: super; letter-spacing: 0; }
-    .price-forever { font-size: 14px; color: var(--text3); margin-top: 4px; margin-bottom: 28px; }
-    .price-features { text-align: left; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
-    .price-feature { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text1); }
-    .price-check { color: var(--teal); font-size: 16px; flex-shrink: 0; }
+
+    .price-amount sup {
+      font-size: 28px;
+      vertical-align: super;
+      letter-spacing: 0;
+    }
+
+    .price-forever {
+      font-size: 14px;
+      color: var(--text3);
+      margin-top: 4px;
+      margin-bottom: 28px;
+    }
+
+    .price-features {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .price-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text1);
+    }
+
+    .price-check {
+      color: var(--teal);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
     .price-cta {
-      display: block; width: 100%;
-      background: var(--teal); color: #0A0F1E;
+      display: block;
+      width: 100%;
+      background: var(--teal);
+      color: #0A0F1E;
       font-family: 'Syne', sans-serif;
-      font-weight: 700; font-size: 16px;
-      padding: 16px; border-radius: 12px;
-      border: none; cursor: pointer;
-      text-decoration: none; text-align: center;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 16px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
       transition: opacity 0.2s;
     }
-    .price-cta:hover { opacity: 0.88; }
-    .price-note { font-size: 12px; color: var(--text3); margin-top: 14px; }
+
+    .price-cta:hover {
+      opacity: 0.88;
+    }
+
+    .price-note {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 14px;
+    }
 
     /* ── FAQ ── */
     .faq {
@@ -386,329 +728,432 @@
       max-width: 680px;
       margin: 0 auto;
     }
+
     .faq-item {
       border-bottom: 1px solid var(--border);
       padding: 20px 0;
     }
+
     .faq-q {
       font-family: 'Syne', sans-serif;
-      font-size: 16px; font-weight: 600;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 16px;
       user-select: none;
     }
-    .faq-q::after { content: '+'; color: var(--teal); font-size: 20px; flex-shrink: 0; transition: transform 0.2s; }
-    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+    .faq-q::after {
+      content: '+';
+      color: var(--teal);
+      font-size: 20px;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+
+    .faq-item.open .faq-q::after {
+      transform: rotate(45deg);
+    }
+
     .faq-a {
-      font-size: 14px; color: var(--text2);
-      line-height: 1.7; font-weight: 300;
-      max-height: 0; overflow: hidden;
+      font-size: 14px;
+      color: var(--text2);
+      line-height: 1.7;
+      font-weight: 300;
+      max-height: 0;
+      overflow: hidden;
       transition: max-height 0.3s ease, padding 0.3s;
     }
-    .faq-item.open .faq-a { max-height: 200px; padding-top: 12px; }
+
+    .faq-item.open .faq-a {
+      max-height: 200px;
+      padding-top: 12px;
+    }
 
     /* ── Footer ── */
     footer {
       padding: 48px 5%;
       border-top: 1px solid var(--border);
       text-align: center;
-      position: relative; z-index: 1;
+      position: relative;
+      z-index: 1;
     }
-    .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 12px; }
-    .footer-logo span { color: var(--teal); }
-    .footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 16px; }
-    .footer-links a { font-size: 13px; color: var(--text3); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--teal); }
-    .footer-copy { font-size: 12px; color: #2a3548; }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .footer-logo span {
+      color: var(--teal);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--teal);
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: #2a3548;
+    }
 
     /* ── Animations ── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* ── Responsive ── */
     @media (max-width: 600px) {
-      .email-row { flex-direction: column; gap: 8px; padding: 12px; }
-      .submit-btn { width: 100%; text-align: center; }
-      .trust-bar { gap: 16px; }
-      .price-amount { font-size: 56px; }
+      .email-row {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px;
+      }
+
+      .submit-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .trust-bar {
+        gap: 16px;
+      }
+
+      .price-amount {
+        font-size: 56px;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div class="glow-1"></div>
-<div class="glow-2"></div>
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
 
-<!-- Nav -->
-<nav>
-  <div class="nav-logo"><span>Portfolio</span>Lite</div>
-  <a href="#waitlist" class="nav-cta">Join Beta</a>
-</nav>
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo"><span>Portfolio</span>Lite</div>
+    <a href="#waitlist" class="nav-cta">Join Beta</a>
+  </nav>
 
-<!-- Hero -->
-<section class="hero" id="top">
-  <div class="hero-badge">
-    <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block"></span>
-    Coming soon to Android
-  </div>
-
-  <h1>Your wealth.<br><span class="accent">Your phone.</span><br><span class="gold-accent">Nobody else.</span></h1>
-
-  <p class="hero-sub">
-    Track SIPs, gold, FDs, stocks, and crypto in one private dashboard.
-    No bank login. No cloud. No subscription. Your data never leaves your device.
-  </p>
-
-  <!-- Email form -->
-  <div class="form-wrap" id="waitlist">
-    <div class="email-row">
-      <input
-        type="email"
-        class="email-input"
-        id="emailInput"
-        placeholder="your@email.com"
-        autocomplete="email"
-      />
-      <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
-        Get Early Access
-      </button>
+  <!-- Hero -->
+  <section class="hero" id="top">
+    <div class="hero-badge">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block"></span>
+      Coming soon to Android
     </div>
-    <p class="form-meta">Free to join · No spam · Launch notification only</p>
-    <div class="success-msg" id="successMsg">
-      <span style="font-size:20px">🎉</span>
-      You're on the list! We'll email you the moment it launches.
+
+    <h1>Your wealth.<br><span class="accent">Your phone.</span><br><span class="gold-accent">Nobody else.</span></h1>
+
+    <p class="hero-sub">
+      Track SIPs, gold, FDs, stocks, and crypto in one private dashboard.
+      No bank login. No cloud. No subscription. Your data never leaves your device.
+    </p>
+
+    <!-- Email form -->
+    <div class="form-wrap" id="waitlist">
+      <div class="email-row">
+        <input type="email" class="email-input" id="emailInput" placeholder="your@email.com" autocomplete="email" />
+        <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+          Get Early Access
+        </button>
+      </div>
+      <p class="form-meta">Free to join · No spam · Launch notification only</p>
+      <div class="success-msg" id="successMsg">
+        <span style="font-size:20px">🎉</span>
+        You're on the list! We'll email you the moment it launches.
+      </div>
     </div>
-  </div>
 
-  <div class="trust-bar">
-    <div class="trust-item"><div class="trust-dot"></div>Zero cloud storage</div>
-    <div class="trust-item"><div class="trust-dot"></div>No bank linking</div>
-    <div class="trust-item"><div class="trust-dot"></div>₹49 one-time forever</div>
-    <div class="trust-item"><div class="trust-dot"></div>Offline forever</div>
-  </div>
-</section>
+    <div class="trust-bar">
+      <div class="trust-item">
+        <div class="trust-dot"></div>Zero cloud storage
+      </div>
+      <div class="trust-item">
+        <div class="trust-dot"></div>No bank linking
+      </div>
+      <div class="trust-item">
+        <div class="trust-dot"></div>₹49 one-time forever
+      </div>
+      <div class="trust-item">
+        <div class="trust-dot"></div>Offline forever
+      </div>
+    </div>
+  </section>
 
-<!-- Phone mockup -->
-<section class="phone-section">
-  <div class="phone-frame">
-    <div class="phone-screen">
-      <div class="phone-header">
-        <span class="phone-logo">PortfolioLite</span>
-        <svg class="phone-lock" viewBox="0 0 14 14" fill="none">
-          <rect x="2" y="6" width="10" height="7" rx="2" stroke="#64748B" stroke-width="1.5"/>
-          <path d="M4.5 6V4a2.5 2.5 0 0 1 5 0v2" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <div class="nw-card">
-        <div class="nw-badge">
-          <div class="nw-badge-dot"></div>
-          <span class="nw-badge-text">Zero Cloud · On-Device Only</span>
-        </div>
-        <div class="nw-label">Total Net Worth</div>
-        <div class="nw-amount">₹14,87,350</div>
-        <div class="nw-change">▲ ₹23,400 this month</div>
-      </div>
-      <div class="chart-placeholder">
-        <div class="chart-row">
-          <!-- Mini donut SVG -->
-          <svg width="52" height="52" viewBox="0 0 52 52" class="chart-svg">
-            <circle cx="26" cy="26" r="18" fill="none" stroke="#1a2236" stroke-width="7"/>
-            <circle cx="26" cy="26" r="18" fill="none" stroke="#00D4B4" stroke-width="6" stroke-dasharray="45 68" stroke-dashoffset="17" stroke-linecap="round"/>
-            <circle cx="26" cy="26" r="18" fill="none" stroke="#F5A623" stroke-width="6" stroke-dasharray="28 85" stroke-dashoffset="-28" stroke-linecap="round"/>
-            <circle cx="26" cy="26" r="18" fill="none" stroke="#3B82F6" stroke-width="6" stroke-dasharray="22 91" stroke-dashoffset="-56" stroke-linecap="round"/>
+  <!-- Phone mockup -->
+  <section class="phone-section">
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="phone-header">
+          <span class="phone-logo">PortfolioLite</span>
+          <svg class="phone-lock" viewBox="0 0 14 14" fill="none">
+            <rect x="2" y="6" width="10" height="7" rx="2" stroke="#64748B" stroke-width="1.5" />
+            <path d="M4.5 6V4a2.5 2.5 0 0 1 5 0v2" stroke="#64748B" stroke-width="1.5" stroke-linecap="round" />
           </svg>
-          <div class="chart-legend">
-            <div class="leg"><div class="leg-dot" style="background:#00D4B4"></div><span class="leg-text">MF · 40%</span></div>
-            <div class="leg"><div class="leg-dot" style="background:#F5A623"></div><span class="leg-text">Gold · 25%</span></div>
-            <div class="leg"><div class="leg-dot" style="background:#3B82F6"></div><span class="leg-text">FD · 20%</span></div>
-            <div class="leg"><div class="leg-dot" style="background:#F97316"></div><span class="leg-text">Stocks · 15%</span></div>
+        </div>
+        <div class="nw-card">
+          <div class="nw-badge">
+            <div class="nw-badge-dot"></div>
+            <span class="nw-badge-text">Zero Cloud · On-Device Only</span>
+          </div>
+          <div class="nw-label">Total Net Worth</div>
+          <div class="nw-amount">₹14,87,350</div>
+          <div class="nw-change">▲ ₹23,400 this month</div>
+        </div>
+        <div class="chart-placeholder">
+          <div class="chart-row">
+            <!-- Mini donut SVG -->
+            <svg width="52" height="52" viewBox="0 0 52 52" class="chart-svg">
+              <circle cx="26" cy="26" r="18" fill="none" stroke="#1a2236" stroke-width="7" />
+              <circle cx="26" cy="26" r="18" fill="none" stroke="#00D4B4" stroke-width="6" stroke-dasharray="45 68"
+                stroke-dashoffset="17" stroke-linecap="round" />
+              <circle cx="26" cy="26" r="18" fill="none" stroke="#F5A623" stroke-width="6" stroke-dasharray="28 85"
+                stroke-dashoffset="-28" stroke-linecap="round" />
+              <circle cx="26" cy="26" r="18" fill="none" stroke="#3B82F6" stroke-width="6" stroke-dasharray="22 91"
+                stroke-dashoffset="-56" stroke-linecap="round" />
+            </svg>
+            <div class="chart-legend">
+              <div class="leg">
+                <div class="leg-dot" style="background:#00D4B4"></div><span class="leg-text">MF · 40%</span>
+              </div>
+              <div class="leg">
+                <div class="leg-dot" style="background:#F5A623"></div><span class="leg-text">Gold · 25%</span>
+              </div>
+              <div class="leg">
+                <div class="leg-dot" style="background:#3B82F6"></div><span class="leg-text">FD · 20%</span>
+              </div>
+              <div class="leg">
+                <div class="leg-dot" style="background:#F97316"></div><span class="leg-text">Stocks · 15%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="asset-list">
+          <div class="asset-row-mini">
+            <div class="asset-icon-mini">📈</div>
+            <span class="asset-name-mini">HDFC Flexi Cap</span>
+            <span class="asset-val-mini">₹5,94,000</span>
+          </div>
+          <div class="asset-row-mini">
+            <div class="asset-icon-mini">🥇</div>
+            <span class="asset-name-mini">Digital Gold</span>
+            <span class="asset-val-mini">₹3,71,800</span>
+          </div>
+          <div class="asset-row-mini">
+            <div class="asset-icon-mini">🏦</div>
+            <span class="asset-name-mini">SBI FD 7.2%</span>
+            <span class="asset-val-mini">₹2,97,350</span>
           </div>
         </div>
       </div>
-      <div class="asset-list">
-        <div class="asset-row-mini">
-          <div class="asset-icon-mini">📈</div>
-          <span class="asset-name-mini">HDFC Flexi Cap</span>
-          <span class="asset-val-mini">₹5,94,000</span>
-        </div>
-        <div class="asset-row-mini">
-          <div class="asset-icon-mini">🥇</div>
-          <span class="asset-name-mini">Digital Gold</span>
-          <span class="asset-val-mini">₹3,71,800</span>
-        </div>
-        <div class="asset-row-mini">
-          <div class="asset-icon-mini">🏦</div>
-          <span class="asset-name-mini">SBI FD 7.2%</span>
-          <span class="asset-val-mini">₹2,97,350</span>
-        </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="section-label">Why PortfolioLite</div>
+    <h2 class="section-title">Built for Indian investors who value privacy</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(0,212,180,0.08)">🔒</div>
+        <div class="feature-title">Zero Cloud, Zero Risk</div>
+        <p class="feature-desc">All data lives in SQLite on your phone. We have no server. We cannot see your data. No
+          breach is possible because there is nothing to breach.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(245,166,35,0.08)">📊</div>
+        <div class="feature-title">All Your Assets, One Screen</div>
+        <p class="feature-desc">SIPs, stocks, gold (physical + ETF), FDs, PPF, NPS, crypto, real estate — everything in
+          one net worth number with a breakdown chart.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.08)">📴</div>
+        <div class="feature-title">Works Offline Forever</div>
+        <p class="feature-desc">No internet needed after install. Works in flight mode. Works without a SIM. Works when
+          Jio is down. Always.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(34,197,94,0.08)">📈</div>
+        <div class="feature-title">Net Worth Timeline</div>
+        <p class="feature-desc">Touch and drag the chart to see exactly how your wealth grew. Snapshots saved
+          automatically every time you open the app.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(168,85,247,0.08)">👆</div>
+        <div class="feature-title">Biometric Lock</div>
+        <p class="feature-desc">Optional fingerprint or face lock. Only you can open it. No PIN stored anywhere — uses
+          your phone's built-in security system.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(249,115,22,0.08)">📤</div>
+        <div class="feature-title">CSV Export</div>
+        <p class="feature-desc">One tap exports all your data as a spreadsheet to your phone storage. Your numbers are
+          always yours — portable and accessible.</p>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Features -->
-<section class="features">
-  <div class="section-label">Why PortfolioLite</div>
-  <h2 class="section-title">Built for Indian investors who value privacy</h2>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(0,212,180,0.08)">🔒</div>
-      <div class="feature-title">Zero Cloud, Zero Risk</div>
-      <p class="feature-desc">All data lives in SQLite on your phone. We have no server. We cannot see your data. No breach is possible because there is nothing to breach.</p>
+  <!-- Pricing -->
+  <section class="pricing">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title" style="text-align:center;max-width:100%">Simple, honest, forever</h2>
+    <div class="price-card">
+      <div class="price-badge">One-Time Purchase</div>
+      <div class="price-amount"><sup>₹</sup>49</div>
+      <p class="price-forever">Pay once. Use forever. No surprises.</p>
+      <div class="price-features">
+        <div class="price-feature"><span class="price-check">✓</span> Unlimited assets — track everything you own</div>
+        <div class="price-feature"><span class="price-check">✓</span> Net worth history chart</div>
+        <div class="price-feature"><span class="price-check">✓</span> CSV export — your data, always portable</div>
+        <div class="price-feature"><span class="price-check">✓</span> All future updates, free forever</div>
+        <div class="price-feature"><span class="price-check">✓</span> No subscription. Ever.</div>
+      </div>
+      <a href="#waitlist" class="price-cta">Join the Beta — It's Free to Try</a>
+      <p class="price-note">Free tier available: track up to 5 assets at no cost</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(245,166,35,0.08)">📊</div>
-      <div class="feature-title">All Your Assets, One Screen</div>
-      <p class="feature-desc">SIPs, stocks, gold (physical + ETF), FDs, PPF, NPS, crypto, real estate — everything in one net worth number with a breakdown chart.</p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <div class="section-label">Questions</div>
+    <h2 class="section-title">Honest answers</h2>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Is my financial data really private?</div>
+      <div class="faq-a">Yes, completely. PortfolioLite stores everything in SQLite on your device. We have no server
+        that receives your data. There is no account, no sync, no cloud backup. The privacy policy is one page and says
+        exactly this — we have nothing to store because nothing leaves your phone.</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(59,130,246,0.08)">📴</div>
-      <div class="feature-title">Works Offline Forever</div>
-      <p class="feature-desc">No internet needed after install. Works in flight mode. Works without a SIM. Works when Jio is down. Always.</p>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">What happens if I lose my phone?</div>
+      <div class="faq-a">Your data is on your device, so a factory reset or lost phone means the data is gone. This is
+        the honest trade-off of true privacy. We recommend using the CSV export feature regularly as a backup — save it
+        to Google Drive or email it to yourself. A cloud backup option (encrypted, optional) is planned for a future
+        version.</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(34,197,94,0.08)">📈</div>
-      <div class="feature-title">Net Worth Timeline</div>
-      <p class="feature-desc">Touch and drag the chart to see exactly how your wealth grew. Snapshots saved automatically every time you open the app.</p>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Does it connect to Zerodha, Groww, or my bank?</div>
+      <div class="faq-a">No, and that is intentional. PortfolioLite is manual-entry only. You type in your asset values.
+        This means no account linking, no credentials, no API tokens. It takes 30 seconds to add an asset. The trade-off
+        is real-time prices are not automatic — you update values when you want to.</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(168,85,247,0.08)">👆</div>
-      <div class="feature-title">Biometric Lock</div>
-      <p class="feature-desc">Optional fingerprint or face lock. Only you can open it. No PIN stored anywhere — uses your phone's built-in security system.</p>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Can I pay via UPI — PhonePe, GPay, Paytm?</div>
+      <div class="faq-a">Yes. We support payment via UPI (₹45) in addition to Google Play Billing (₹49). The UPI option
+        is available directly from the app's payment screen at launch.</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(249,115,22,0.08)">📤</div>
-      <div class="feature-title">CSV Export</div>
-      <p class="feature-desc">One tap exports all your data as a spreadsheet to your phone storage. Your numbers are always yours — portable and accessible.</p>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">When does it launch?</div>
+      <div class="faq-a">Android launch is planned for Q2 2026. Join the beta list above and you will be the first to
+        know — we will email you the Play Store link the moment it goes live.</div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Pricing -->
-<section class="pricing">
-  <div class="section-label">Pricing</div>
-  <h2 class="section-title" style="text-align:center;max-width:100%">Simple, honest, forever</h2>
-  <div class="price-card">
-    <div class="price-badge">One-Time Purchase</div>
-    <div class="price-amount"><sup>₹</sup>49</div>
-    <p class="price-forever">Pay once. Use forever. No surprises.</p>
-    <div class="price-features">
-      <div class="price-feature"><span class="price-check">✓</span> Unlimited assets — track everything you own</div>
-      <div class="price-feature"><span class="price-check">✓</span> Net worth history chart</div>
-      <div class="price-feature"><span class="price-check">✓</span> CSV export — your data, always portable</div>
-      <div class="price-feature"><span class="price-check">✓</span> All future updates, free forever</div>
-      <div class="price-feature"><span class="price-check">✓</span> No subscription. Ever.</div>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-logo"><span>Portfolio</span>Lite</div>
+    <div class="footer-links">
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="mailto:hello@portfoliolite.in">Contact</a>
+      <a href="#top">Back to top</a>
     </div>
-    <a href="#waitlist" class="price-cta">Join the Beta — It's Free to Try</a>
-    <p class="price-note">Free tier available: track up to 5 assets at no cost</p>
-  </div>
-</section>
+    <p class="footer-copy">Built by an indie developer in India 🇮🇳 · PortfolioLite · Zero Cloud · Zero Tracking</p>
+  </footer>
 
-<!-- FAQ -->
-<section class="faq">
-  <div class="section-label">Questions</div>
-  <h2 class="section-title">Honest answers</h2>
+  <script>
+    // ── Google Apps Script URL ──────────────────────────────────────
+    // REPLACE THIS with your actual Apps Script web app URL
+    // See GOOGLE_SHEET_SETUP.md for instructions
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMandoh64z9EuPwOIVkiDr0MYmzLvSqpPKRSvwnBSgtCif-t8nOjFBinIAo_rc1ilaaw/exec";
 
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Is my financial data really private?</div>
-    <div class="faq-a">Yes, completely. PortfolioLite stores everything in SQLite on your device. We have no server that receives your data. There is no account, no sync, no cloud backup. The privacy policy is one page and says exactly this — we have nothing to store because nothing leaves your phone.</div>
-  </div>
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">What happens if I lose my phone?</div>
-    <div class="faq-a">Your data is on your device, so a factory reset or lost phone means the data is gone. This is the honest trade-off of true privacy. We recommend using the CSV export feature regularly as a backup — save it to Google Drive or email it to yourself. A cloud backup option (encrypted, optional) is planned for a future version.</div>
-  </div>
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Does it connect to Zerodha, Groww, or my bank?</div>
-    <div class="faq-a">No, and that is intentional. PortfolioLite is manual-entry only. You type in your asset values. This means no account linking, no credentials, no API tokens. It takes 30 seconds to add an asset. The trade-off is real-time prices are not automatic — you update values when you want to.</div>
-  </div>
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">Can I pay via UPI — PhonePe, GPay, Paytm?</div>
-    <div class="faq-a">Yes. We support payment via UPI (₹45) in addition to Google Play Billing (₹49). The UPI option is available directly from the app's payment screen at launch.</div>
-  </div>
-  <div class="faq-item">
-    <div class="faq-q" onclick="toggleFaq(this)">When does it launch?</div>
-    <div class="faq-a">Android launch is planned for Q2 2026. Join the beta list above and you will be the first to know — we will email you the Play Store link the moment it goes live.</div>
-  </div>
-</section>
+    async function handleSubmit() {
+      const emailInput = document.getElementById("emailInput");
+      const submitBtn = document.getElementById("submitBtn");
+      const formWrap = document.querySelector(".form-wrap");
+      const successMsg = document.getElementById("successMsg");
 
-<!-- Footer -->
-<footer>
-  <div class="footer-logo"><span>Portfolio</span>Lite</div>
-  <div class="footer-links">
-    <a href="privacy-policy.html">Privacy Policy</a>
-    <a href="mailto:hello@portfoliolite.in">Contact</a>
-    <a href="#top">Back to top</a>
-  </div>
-  <p class="footer-copy">Built by an indie developer in India 🇮🇳 · PortfolioLite · Zero Cloud · Zero Tracking</p>
-</footer>
+      const email = emailInput.value.trim();
 
-<script>
-  // ── Google Apps Script URL ──────────────────────────────────────
-  // REPLACE THIS with your actual Apps Script web app URL
-  // See GOOGLE_SHEET_SETUP.md for instructions
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMandoh64z9EuPwOIVkiDr0MYmzLvSqpPKRSvwnBSgtCif-t8nOjFBinIAo_rc1ilaaw/exec";
+      // Basic validation
+      if (!email || !email.includes("@") || !email.includes(".")) {
+        emailInput.style.borderColor = "#EF4444";
+        emailInput.focus();
+        setTimeout(() => emailInput.style.borderColor = "", 2000);
+        return;
+      }
 
-  async function handleSubmit() {
-    const emailInput = document.getElementById("emailInput");
-    const submitBtn  = document.getElementById("submitBtn");
-    const formWrap   = document.querySelector(".form-wrap");
-    const successMsg = document.getElementById("successMsg");
+      // Loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Joining...";
 
-    const email = emailInput.value.trim();
+      try {
+        // Send to Google Apps Script
+        await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors", // required for Apps Script
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email,
+            timestamp: new Date().toISOString(),
+            source: "landing_page"
+          })
+        });
 
-    // Basic validation
-    if (!email || !email.includes("@") || !email.includes(".")) {
-      emailInput.style.borderColor = "#EF4444";
-      emailInput.focus();
-      setTimeout(() => emailInput.style.borderColor = "", 2000);
-      return;
+        // Show success (no-cors means we can't read response, assume success)
+        formWrap.classList.add("submitted");
+        successMsg.classList.add("visible");
+
+      } catch (err) {
+        // Fallback: still show success (network errors shouldn't block UX)
+        // The email may not have been saved — but don't confuse the user
+        formWrap.classList.add("submitted");
+        successMsg.classList.add("visible");
+        console.error("Submission error:", err);
+      }
     }
 
-    // Loading state
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Joining...";
+    // Allow Enter key to submit
+    document.getElementById("emailInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") handleSubmit();
+    });
 
-    try {
-      // Send to Google Apps Script
-      await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors", // required for Apps Script
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email,
-          timestamp: new Date().toISOString(),
-          source: "landing_page"
-        })
-      });
-
-      // Show success (no-cors means we can't read response, assume success)
-      formWrap.classList.add("submitted");
-      successMsg.classList.add("visible");
-
-    } catch (err) {
-      // Fallback: still show success (network errors shouldn't block UX)
-      // The email may not have been saved — but don't confuse the user
-      formWrap.classList.add("submitted");
-      successMsg.classList.add("visible");
-      console.error("Submission error:", err);
+    // ── FAQ toggle ──────────────────────────────────────────────────
+    function toggleFaq(el) {
+      const item = el.closest(".faq-item");
+      const isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item.open").forEach(i => i.classList.remove("open"));
+      if (!isOpen) item.classList.add("open");
     }
-  }
-
-  // Allow Enter key to submit
-  document.getElementById("emailInput").addEventListener("keydown", function(e) {
-    if (e.key === "Enter") handleSubmit();
-  });
-
-  // ── FAQ toggle ──────────────────────────────────────────────────
-  function toggleFaq(el) {
-    const item = el.closest(".faq-item");
-    const isOpen = item.classList.contains("open");
-    document.querySelectorAll(".faq-item.open").forEach(i => i.classList.remove("open"));
-    if (!isOpen) item.classList.add("open");
-  }
-</script>
+  </script>
 </body>
+
 </html>
