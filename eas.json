@@ -1,7 +1,6 @@
 {
   "build": {
     "production": {
-      "enterprise": false,
       "env": {
         "NODE_ENV": "production"
       }
