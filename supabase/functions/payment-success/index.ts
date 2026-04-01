@@ -1,168 +1,79 @@
 // Supabase Edge Function: payment-success
-// Serves a premium HTML page to show the unlock code after payment
-
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+// Returns JSON with the unlock code for a given Razorpay payment ID
+// The actual HTML page is hosted as a static file that calls this API
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
-const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') || ''
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
 
-serve(async (req) => {
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+}
+
+Deno.serve(async (req: Request) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: CORS_HEADERS })
+  }
+
   const url = new URL(req.url)
-  const paymentId = url.searchParams.get('razorpay_payment_id')
+  let paymentId = url.searchParams.get('razorpay_payment_id') || url.searchParams.get('payment_id')
 
-  let code = "Checking..."
-  let status = "loading"
-
-  if (paymentId) {
+  // Also try parsing POST form data (Razorpay sometimes POSTs)
+  if (!paymentId && req.method === 'POST') {
     try {
-      // Query the database for the code associated with this payment ID
-      const resp = await fetch(`${SUPABASE_URL}/rest/v1/unlock_codes?payment_id=eq.${paymentId}&select=code`, {
-        headers: {
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      })
-      const data = await resp.json()
-      if (data && data.length > 0) {
-        code = data[0].code
-        status = "success"
+      const contentType = req.headers.get('content-type') || ''
+      if (contentType.includes('application/x-www-form-urlencoded') || contentType.includes('multipart/form-data')) {
+        const form = await req.formData()
+        paymentId = form.get('razorpay_payment_id')?.toString() || null
       } else {
-        code = "Processing..."
-        status = "pending"
+        const body = await req.json().catch(() => ({}))
+        paymentId = body?.razorpay_payment_id || body?.payment_id || null
       }
     } catch (e) {
-      code = "Error"
-      status = "error"
+      console.error('[payment-success] Failed to parse body:', e)
     }
   }
 
-  const html = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Payment Successful - PortfolioLite</title>
-      <style>
-        body {
-          margin: 0;
-          padding: 0;
-          background-color: #0A0F1E;
-          color: #F1F5F9;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 100vh;
-        }
-        .card {
-          background-color: #111827;
-          border: 1px solid rgba(255, 255, 255, 0.07);
-          border-radius: 24px;
-          padding: 40px;
-          width: 90%;
-          max-width: 400px;
-          text-align: center;
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-        .icon {
-          width: 64px;
-          height: 64px;
-          background-color: rgba(0, 212, 180, 0.1);
-          border-radius: 32px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 24px;
-          color: #00D4B4;
-        }
-        h1 {
-          font-size: 24px;
-          font-weight: 800;
-          margin: 0 0 12px;
-        }
-        p {
-          color: #94A3B8;
-          font-size: 15px;
-          line-height: 1.5;
-          margin: 0 0 32px;
-        }
-        .code-box {
-          background-color: #0A0F1E;
-          border: 2px dashed rgba(59, 130, 246, 0.3);
-          border-radius: 16px;
-          padding: 20px;
-          margin-bottom: 32px;
-        }
-        .code-label {
-          font-size: 10px;
-          font-weight: 800;
-          color: #3B82F6;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          margin-bottom: 8px;
-        }
-        .code-value {
-          font-size: 32px;
-          font-weight: 900;
-          letter-spacing: 4px;
-          color: #F5A623;
-        }
-        .status-pending { color: #F5A623; }
-        .status-error { color: #EF4444; }
-        .success { color: #22C55E; }
-        
-        .btn {
-          background-color: #00D4B4;
-          color: #0A0F1E;
-          text-decoration: none;
-          padding: 16px;
-          border-radius: 14px;
-          font-weight: 800;
-          display: block;
-          transition: transform 0.2s;
-        }
-        .btn:active { transform: scale(0.98); }
-        
-        .footer {
-          margin-top: 24px;
-          font-size: 12px;
-          color: #64748B;
-        }
-      </style>
-      ${status === 'pending' ? `
-        <script>
-          setTimeout(() => { window.location.reload(); }, 2000);
-        </script>
-      ` : ''}
-    </head>
-    <body>
-      <div class="card">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </div>
-        <h1>Payment Successful!</h1>
-        <p>Thank you for supporting PortfolioLite. Your unlock code is ready below.</p>
-        
-        <div class="code-box">
-          <div class="code-label">YOUR UNLOCK CODE</div>
-          <div class="code-value ${status === 'pending' ? 'status-pending' : ''}">
-            ${code}
-          </div>
-        </div>
-        
-        <a href="#" class="btn" onclick="window.close(); return false;">Done</a>
-        
-        <div class="footer">
-          Copy this code and enter it in the app.<br>
-          We've also sent this to your email.
-        </div>
-      </div>
-    </body>
-    </html>
-  `
+  if (!paymentId) {
+    return new Response(JSON.stringify({ success: false, error: 'missing_payment_id' }), {
+      status: 400,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+    })
+  }
 
-  return new Response(html, {
-    headers: { "Content-Type": "text/html" },
-  })
+  try {
+    const resp = await fetch(
+      `${SUPABASE_URL}/rest/v1/unlock_codes?payment_id=eq.${paymentId}&select=code,status`,
+      {
+        headers: {
+          'apikey': SUPABASE_SERVICE_ROLE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+      }
+    )
+
+    const data = await resp.json()
+
+    if (data && data.length > 0) {
+      const row = data[0]
+      return new Response(JSON.stringify({ success: true, code: row.code, status: row.status }), {
+        status: 200,
+        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      })
+    } else {
+      // Code not yet generated — webhook might still be processing
+      return new Response(JSON.stringify({ success: false, error: 'pending' }), {
+        status: 202,
+        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      })
+    }
+  } catch (e) {
+    console.error('[payment-success] DB error:', e)
+    return new Response(JSON.stringify({ success: false, error: 'db_error' }), {
+      status: 500,
+      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+    })
+  }
 })
