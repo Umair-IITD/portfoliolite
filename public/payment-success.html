@@ -195,7 +195,17 @@
       <button class="copy-btn" id="copy-btn" style="display:none" onclick="copyCode()">Copy Code</button>
     </div>
 
-    <button class="btn" onclick="window.close()">Done — Close Window</button>
+    <button class="btn" id="done-btn" onclick="handleDone()">Done — Close Window</button>
+
+    <div id="manual-form" style="display:none; margin-top:16px;">
+      <p style="color:#94A3B8; font-size:13px; margin-bottom:8px;">Enter your Razorpay Payment ID manually:</p>
+      <input id="manual-pid" type="text" placeholder="pay_xxxxxxxxxxxx"
+        style="width:100%; background:#070C19; border:1px solid rgba(255,255,255,0.15); border-radius:10px;
+               color:#F1F5F9; padding:10px 14px; font-size:14px; font-family:inherit; outline:none; box-sizing:border-box;">
+      <button onclick="lookupManual()" style="margin-top:8px; width:100%; background:rgba(59,130,246,0.15);
+        border:1px solid rgba(59,130,246,0.35); color:#93C5FD; border-radius:10px;
+        padding:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;">Look Up My Code</button>
+    </div>
 
     <p class="footer">
       Enter this code in PortfolioLite to unlock Pro.<br>
@@ -209,9 +219,38 @@
     let retryCount = 0;
     let retryTimer = null;
 
+    function handleDone() {
+      try {
+        window.close();
+      } catch(e) {}
+      // Fallback: browser blocks window.close() on redirected pages
+      setTimeout(() => {
+        const btn = document.getElementById('done-btn');
+        btn.textContent = '✓ You can now close this tab';
+        btn.style.background = 'rgba(34,197,94,0.15)';
+        btn.style.color = '#22C55E';
+        btn.style.border = '1px solid rgba(34,197,94,0.35)';
+        btn.style.boxShadow = 'none';
+        btn.onclick = null;
+      }, 300);
+    }
+
     function getPaymentId() {
       const params = new URLSearchParams(window.location.search);
-      return params.get('razorpay_payment_id') || params.get('payment_id');
+      // Razorpay sends: razorpay_payment_id, or razorpay_payment_link_id, or payment_id
+      return params.get('razorpay_payment_id') 
+          || params.get('payment_id') 
+          || params.get('razorpay_payment_link_id');
+    }
+
+    async function lookupManual() {
+      const pid = document.getElementById('manual-pid').value.trim();
+      if (!pid) return;
+      document.getElementById('manual-form').style.display = 'none';
+      retryCount = 0;
+      showPending('Looking up code...');
+      const done = await fetchCode(pid);
+      if (!done) scheduleRetry(pid);
     }
 
     function showCode(code) {
@@ -283,12 +322,33 @@
       }
     }
 
+    function scheduleRetry(paymentId) {
+      if (retryCount >= 20) {
+        showError('Taking too long. Use the form below to look up your code manually.');
+        document.getElementById('manual-form').style.display = 'block';
+        return;
+      }
+      const delay = Math.min(2000 + retryCount * 400, 5000);
+      retryCount++;
+      showPending(`Verifying payment... (${retryCount}/20)`);
+      retryTimer = setTimeout(async () => {
+        const done = await fetchCode(paymentId);
+        if (!done) scheduleRetry(paymentId);
+      }, delay);
+    }
+
     async function init() {
       const paymentId = getPaymentId();
 
       if (!paymentId) {
-        showError('No payment ID found in URL.');
-        document.getElementById('subtitle').textContent = 'Please check your email for your unlock code, or contact support.';
+        // No payment ID in URL — Razorpay may not have appended it
+        // Show the manual lookup form immediately
+        const el = document.getElementById('code-display');
+        el.className = 'code-value error-state';
+        el.innerHTML = '⚠ No payment ID in URL';
+        document.getElementById('subtitle').textContent = 
+          'Razorpay did not pass your payment ID to this page. Enter it below.';
+        document.getElementById('manual-form').style.display = 'block';
         return;
       }
 
@@ -297,22 +357,7 @@
       const done = await fetchCode(paymentId);
       if (done) return;
 
-      // Retry with exponential backoff (max 10 retries, ~30 seconds total)
-      function scheduleRetry() {
-        if (retryCount >= 10) {
-          showError('Taking too long. Check your email for the code.');
-          return;
-        }
-        const delay = Math.min(2000 + retryCount * 500, 5000);
-        retryCount++;
-        showPending(`Verifying payment... (attempt ${retryCount})`);
-        retryTimer = setTimeout(async () => {
-          const done = await fetchCode(paymentId);
-          if (!done) scheduleRetry();
-        }, delay);
-      }
-
-      scheduleRetry();
+      scheduleRetry(paymentId);
     }
 
     init();
