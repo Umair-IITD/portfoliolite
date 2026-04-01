@@ -220,10 +220,7 @@
     let retryTimer = null;
 
     function handleDone() {
-      try {
-        window.close();
-      } catch(e) {}
-      // Fallback: browser blocks window.close() on redirected pages
+      try { window.close(); } catch(e) {}
       setTimeout(() => {
         const btn = document.getElementById('done-btn');
         btn.textContent = '✓ You can now close this tab';
@@ -237,20 +234,9 @@
 
     function getPaymentId() {
       const params = new URLSearchParams(window.location.search);
-      // Razorpay sends: razorpay_payment_id, or razorpay_payment_link_id, or payment_id
-      return params.get('razorpay_payment_id') 
-          || params.get('payment_id') 
+      return params.get('razorpay_payment_id')
+          || params.get('payment_id')
           || params.get('razorpay_payment_link_id');
-    }
-
-    async function lookupManual() {
-      const pid = document.getElementById('manual-pid').value.trim();
-      if (!pid) return;
-      document.getElementById('manual-form').style.display = 'none';
-      retryCount = 0;
-      showPending('Looking up code...');
-      const done = await fetchCode(pid);
-      if (!done) scheduleRetry(pid);
     }
 
     function showCode(code) {
@@ -299,7 +285,8 @@
 
     async function fetchCode(paymentId) {
       try {
-        const res = await fetch(`${SUPABASE_FUNCTION_URL}?razorpay_payment_id=${paymentId}`);
+        // Use mode=api so the edge function returns JSON instead of a redirect
+        const res = await fetch(`${SUPABASE_FUNCTION_URL}?razorpay_payment_id=${paymentId}&mode=api`);
         const data = await res.json();
 
         if (res.ok && data.success && data.code) {
@@ -324,8 +311,8 @@
 
     function scheduleRetry(paymentId) {
       if (retryCount >= 20) {
-        showError('Taking too long. Use the form below to look up your code manually.');
-        document.getElementById('manual-form').style.display = 'block';
+        showError('Taking too long. Please email support@portfoliolite.app with your Razorpay receipt.');
+        document.getElementById('manual-form').style.display = 'none';
         return;
       }
       const delay = Math.min(2000 + retryCount * 400, 5000);
@@ -338,25 +325,24 @@
     }
 
     async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const errorFlag = params.get('error');
       const paymentId = getPaymentId();
 
-      if (!paymentId) {
-        // No payment ID in URL — Razorpay may not have appended it
-        // Show the manual lookup form immediately
+      if (errorFlag === 'missing_id' || (!paymentId && !errorFlag)) {
         const el = document.getElementById('code-display');
         el.className = 'code-value error-state';
-        el.innerHTML = '⚠ No payment ID in URL';
-        document.getElementById('subtitle').textContent = 
-          'Razorpay did not pass your payment ID to this page. Enter it below.';
-        document.getElementById('manual-form').style.display = 'block';
+        el.innerHTML = '⚠ ID not received';
+        document.getElementById('subtitle').textContent =
+          'There was an issue with the payment redirect. Please contact support with your Razorpay payment confirmation email.';
         return;
       }
 
-      showPending('Fetching...');
+      if (!paymentId) return;
 
+      showPending('Fetching your code...');
       const done = await fetchCode(paymentId);
       if (done) return;
-
       scheduleRetry(paymentId);
     }
 
