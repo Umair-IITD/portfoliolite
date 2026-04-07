@@ -220,23 +220,26 @@
     let retryTimer = null;
 
     function handleDone() {
-      try { window.close(); } catch(e) {}
+      try { 
+        window.location.href = 'portfoliolite://';
+      } catch(e) {}
       setTimeout(() => {
         const btn = document.getElementById('done-btn');
-        btn.textContent = '✓ You can now close this tab';
-        btn.style.background = 'rgba(34,197,94,0.15)';
-        btn.style.color = '#22C55E';
-        btn.style.border = '1px solid rgba(34,197,94,0.35)';
+        btn.innerHTML = 'Switch back to PortfolioLite<br><span style="font-size:12px; font-weight:normal; opacity:0.8;">(or tap here to open)</span>';
+        btn.style.background = 'rgba(59,130,246,0.15)';
+        btn.style.color = '#93C5FD';
+        btn.style.border = '1px solid rgba(59,130,246,0.35)';
         btn.style.boxShadow = 'none';
-        btn.onclick = null;
-      }, 300);
+        btn.onclick = () => { window.location.href = 'portfoliolite://'; };
+      }, 500);
     }
 
     function getPaymentId() {
       const params = new URLSearchParams(window.location.search);
       return params.get('razorpay_payment_id')
           || params.get('payment_id')
-          || params.get('razorpay_payment_link_id');
+          || params.get('razorpay_payment_link_id')
+          || params.get('razorpay_payment_link_reference_id');
     }
 
     function showCode(code) {

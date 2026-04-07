@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://umair-iitd.github.io/portfoliolite/sitemap.xml
+Sitemap: https://portfoliolite.tech/sitemap.xml
