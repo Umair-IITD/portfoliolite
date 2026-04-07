@@ -24,126 +24,93 @@
     .card {
       background: linear-gradient(135deg, #111827 0%, #0f1a2e 100%);
       border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 28px;
-      padding: 44px 36px;
+      border-radius: 32px;
+      padding: 56px 40px;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       text-align: center;
       box-shadow: 0 32px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 212, 180, 0.05) 0%, transparent 70%);
+      pointer-events: none;
     }
 
     .icon-wrap {
-      width: 72px;
-      height: 72px;
+      width: 88px;
+      height: 88px;
       background: rgba(0, 212, 180, 0.12);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 28px;
+      margin: 0 auto 32px;
       border: 1px solid rgba(0,212,180,0.2);
-      box-shadow: 0 0 32px rgba(0,212,180,0.15);
+      box-shadow: 0 0 40px rgba(0,212,180,0.15);
+      animation: bounceIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .icon-wrap svg { color: #00D4B4; }
 
     h1 {
-      font-size: 26px;
-      font-weight: 800;
-      margin-bottom: 10px;
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 16px;
       letter-spacing: -0.5px;
+      background: linear-gradient(to right, #F1F5F9, #94A3B8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .message-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: 24px;
+      padding: 32px 24px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
     }
 
     .subtitle {
       color: #94A3B8;
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 32px;
-    }
-
-    .code-box {
-      background: #070C19;
-      border: 2px dashed rgba(59,130,246,0.25);
-      border-radius: 18px;
-      padding: 24px 20px;
-      margin-bottom: 28px;
-      position: relative;
-    }
-
-    .code-label {
-      font-size: 10px;
-      font-weight: 800;
-      color: #3B82F6;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .code-value {
-      font-size: 38px;
-      font-weight: 900;
-      letter-spacing: 6px;
-      color: #F5A623;
-      min-height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .code-value.pending {
-      color: #F5A623;
       font-size: 16px;
-      letter-spacing: 1px;
-      font-weight: 600;
-      opacity: 0.8;
-      animation: pulse 1.5s ease-in-out infinite;
+      line-height: 1.6;
+      margin-bottom: 8px;
     }
 
-    .code-value.error-state {
-      color: #EF4444;
-      font-size: 14px;
-      letter-spacing: 1px;
-      font-weight: 600;
-    }
-
-    .code-value.success {
+    .email-highlight {
       color: #F5A623;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 0.4; }
-    }
-
-    .copy-btn {
+      font-weight: 800;
+      font-size: 18px;
       display: block;
-      margin: 10px auto 0;
-      background: none;
-      border: 1px solid rgba(245,166,35,0.3);
-      color: #F5A623;
-      border-radius: 8px;
-      padding: 6px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
+      margin-top: 12px;
     }
-
-    .copy-btn:hover { background: rgba(245,166,35,0.1); }
-    .copy-btn.copied { color: #22C55E; border-color: rgba(34,197,94,0.4); }
 
     .btn {
       display: block;
       background: linear-gradient(135deg, #00D4B4, #00B89C);
       color: #0A0F1E;
       text-decoration: none;
-      padding: 18px;
-      border-radius: 16px;
-      font-weight: 800;
+      padding: 20px;
+      border-radius: 18px;
+      font-weight: 900;
       font-size: 16px;
       letter-spacing: -0.2px;
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: all 0.2s;
       box-shadow: 0 8px 24px rgba(0,212,180,0.25);
       cursor: pointer;
       border: none;
@@ -151,78 +118,55 @@
       font-family: inherit;
     }
 
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(0,212,180,0.35); }
-    .btn:active { transform: scale(0.98); }
+    .btn:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 12px 32px rgba(0,212,180,0.35); 
+    }
+    
+    .btn:active { transform: translateY(0); }
 
     .footer {
-      margin-top: 24px;
-      font-size: 12px;
+      margin-top: 28px;
+      font-size: 13px;
       color: #475569;
       line-height: 1.6;
     }
 
-    .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(245,166,35,0.3);
-      border-top-color: #F5A623;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .footer a { color: #00D4B4; text-decoration: none; font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="icon-wrap">
-      <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="20 6 9 17 4 12"></polyline>
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 6 12 13 2 6"></polyline>
+        <path d="M22 6v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6"></path>
       </svg>
     </div>
-    <h1>Payment Successful! 🎉</h1>
-    <p class="subtitle" id="subtitle">Fetching your unlock code...</p>
-
-    <div class="code-box">
-      <div class="code-label">Your Unlock Code</div>
-      <div class="code-value pending" id="code-display">
-        <span class="spinner"></span> Fetching...
-      </div>
-      <button class="copy-btn" id="copy-btn" style="display:none" onclick="copyCode()">Copy Code</button>
+    <h1>Check Your Email! 📬</h1>
+    
+    <div class="message-box">
+      <p class="subtitle">
+        Your payment was successful and your PortfolioLite Pro unlock code has been sent to:
+      </p>
+      <span class="email-highlight">Your Registered Email</span>
     </div>
 
-    <button class="btn" id="done-btn" onclick="handleDone()">Done — Close Window</button>
-
-    <div id="manual-form" style="display:none; margin-top:16px;">
-      <p style="color:#94A3B8; font-size:13px; margin-bottom:8px;">Enter your Razorpay Payment ID manually:</p>
-      <input id="manual-pid" type="text" placeholder="pay_xxxxxxxxxxxx"
-        style="width:100%; background:#070C19; border:1px solid rgba(255,255,255,0.15); border-radius:10px;
-               color:#F1F5F9; padding:10px 14px; font-size:14px; font-family:inherit; outline:none; box-sizing:border-box;">
-      <button onclick="lookupManual()" style="margin-top:8px; width:100%; background:rgba(59,130,246,0.15);
-        border:1px solid rgba(59,130,246,0.35); color:#93C5FD; border-radius:10px;
-        padding:10px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;">Look Up My Code</button>
-    </div>
+    <button class="btn" id="done-btn" onclick="handleDone()">Done — Return to App</button>
 
     <p class="footer">
-      Enter this code in PortfolioLite to unlock Pro.<br>
-      Your code is also saved to your Razorpay email.
+      Didn't receive it? Check your spam folder or<br>
+      contact us at <a href="mailto:support@portfoliolite.tech">support@portfoliolite.tech</a>
     </p>
   </div>
 
   <script>
-    const SUPABASE_FUNCTION_URL = 'https://sdmmujejnxrzgozpstcp.supabase.co/functions/v1/payment-success';
-    let currentCode = null;
-    let retryCount = 0;
-    let retryTimer = null;
-
     function handleDone() {
       try { 
         window.location.href = 'portfoliolite://';
       } catch(e) {}
+      
       setTimeout(() => {
         const btn = document.getElementById('done-btn');
         btn.innerHTML = 'Switch back to PortfolioLite<br><span style="font-size:12px; font-weight:normal; opacity:0.8;">(or tap here to open)</span>';
@@ -234,134 +178,10 @@
       }, 500);
     }
 
-    function getPaymentId() {
-      const params = new URLSearchParams(window.location.search);
-      // 1. Try known keys
-      const known = params.get('razorpay_payment_id')
-          || params.get('payment_id')
-          || params.get('razorpay_payment_link_id')
-          || params.get('razorpay_payment_link_reference_id');
-      if (known) return known;
-
-      // 2. Brute-force: look for any value matching pay_ or plink_
-      for (const [key, val] of params.entries()) {
-        if (val && (val.startsWith('pay_') || val.startsWith('plink_') || val.startsWith('ord_'))) {
-          console.log('Found ID via brute-force:', val);
-          return val;
-        }
-      }
-      return null;
-    }
-
-    function showCode(code) {
-      currentCode = code;
-      const el = document.getElementById('code-display');
-      el.className = 'code-value success';
-      el.textContent = code;
-      document.getElementById('copy-btn').style.display = 'block';
-      document.getElementById('subtitle').textContent = 'Thank you for supporting PortfolioLite! Copy the code below and enter it in the app.';
-    }
-
-    function showPending(message) {
-      const el = document.getElementById('code-display');
-      el.className = 'code-value pending';
-      el.innerHTML = '<span class="spinner"></span> ' + (message || 'Verifying payment...');
-      document.getElementById('subtitle').textContent = 'Your payment was received. Generating your unlock code...';
-    }
-
-    function showError(message) {
-      const el = document.getElementById('code-display');
-      el.className = 'code-value error-state';
-      el.textContent = message || 'Unable to fetch code. Contact support.';
-      document.getElementById('subtitle').textContent = 'Something went wrong. Please check your email for your code.';
-    }
-
-    function copyCode() {
-      if (!currentCode) return;
-      navigator.clipboard.writeText(currentCode).then(() => {
-        const btn = document.getElementById('copy-btn');
-        btn.textContent = 'Copied!';
-        btn.classList.add('copied');
-        setTimeout(() => {
-          btn.textContent = 'Copy Code';
-          btn.classList.remove('copied');
-        }, 2000);
-      }).catch(() => {
-        // Fallback for older browsers
-        const el = document.getElementById('code-display');
-        const range = document.createRange();
-        range.selectNode(el);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-        document.execCommand('copy');
-      });
-    }
-
-    async function fetchCode(paymentId) {
-      try {
-        // Use mode=api so the edge function returns JSON instead of a redirect
-        const res = await fetch(`${SUPABASE_FUNCTION_URL}?razorpay_payment_id=${paymentId}&mode=api`);
-        const data = await res.json();
-
-        if (res.ok && data.success && data.code) {
-          showCode(data.code);
-          return true; // done
-        } else if (res.status === 202 || data.error === 'pending') {
-          // Webhook still processing, retry
-          return false;
-        } else {
-          showError(data.error === 'missing_payment_id' ? 'Payment ID missing.' : 'Failed to retrieve code.');
-          return true; // stop retrying
-        }
-      } catch (e) {
-        console.error('Fetch error:', e);
-        if (retryCount > 5) {
-          showError('Network error. Please check your email for your code.');
-          return true;
-        }
-        return false;
-      }
-    }
-
-    function scheduleRetry(paymentId) {
-      if (retryCount >= 20) {
-        showError('Taking too long. Please email support@portfoliolite.app with your Razorpay receipt.');
-        document.getElementById('manual-form').style.display = 'none';
-        return;
-      }
-      const delay = Math.min(2000 + retryCount * 400, 5000);
-      retryCount++;
-      showPending(`Verifying payment... (${retryCount}/20)`);
-      retryTimer = setTimeout(async () => {
-        const done = await fetchCode(paymentId);
-        if (!done) scheduleRetry(paymentId);
-      }, delay);
-    }
-
-    async function init() {
-      const params = new URLSearchParams(window.location.search);
-      const errorFlag = params.get('error');
-      const paymentId = getPaymentId();
-
-      if (errorFlag === 'missing_id' || (!paymentId && !errorFlag)) {
-        const el = document.getElementById('code-display');
-        el.className = 'code-value error-state';
-        el.innerHTML = '⚠ ID not received';
-        document.getElementById('subtitle').textContent =
-          'There was an issue with the payment redirect. Please enter your Payment ID manually or check your email.';
-        document.getElementById('manual-form').style.display = 'block';
-        return;
-      }
-
-      if (!paymentId) return;
-
-      showPending('Fetching your code...');
-      const done = await fetchCode(paymentId);
-      if (done) return;
-      scheduleRetry(paymentId);
-    }
-
-    init();
+    // Capture payment ID just for logging/analytics if needed
+    const params = new URLSearchParams(window.location.search);
+    const paymentId = params.get('razorpay_payment_id') || params.get('payment_id');
+    if (paymentId) console.log('Payment processed:', paymentId);
   </script>
 </body>
 </html>
