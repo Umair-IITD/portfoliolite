@@ -236,10 +236,21 @@
 
     function getPaymentId() {
       const params = new URLSearchParams(window.location.search);
-      return params.get('razorpay_payment_id')
+      // 1. Try known keys
+      const known = params.get('razorpay_payment_id')
           || params.get('payment_id')
           || params.get('razorpay_payment_link_id')
           || params.get('razorpay_payment_link_reference_id');
+      if (known) return known;
+
+      // 2. Brute-force: look for any value matching pay_ or plink_
+      for (const [key, val] of params.entries()) {
+        if (val && (val.startsWith('pay_') || val.startsWith('plink_') || val.startsWith('ord_'))) {
+          console.log('Found ID via brute-force:', val);
+          return val;
+        }
+      }
+      return null;
     }
 
     function showCode(code) {
@@ -337,7 +348,8 @@
         el.className = 'code-value error-state';
         el.innerHTML = '⚠ ID not received';
         document.getElementById('subtitle').textContent =
-          'There was an issue with the payment redirect. Please contact support with your Razorpay payment confirmation email.';
+          'There was an issue with the payment redirect. Please enter your Payment ID manually or check your email.';
+        document.getElementById('manual-form').style.display = 'block';
         return;
       }
 
