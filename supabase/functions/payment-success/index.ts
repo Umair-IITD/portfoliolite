@@ -16,6 +16,7 @@ function getCorsHeaders(req: Request) {
   const origin = req.headers.get('origin') || ''
   const allowedOrigins = [
     'https://portfoliolite.tech',
+    'https://www.portfoliolite.tech',
     'http://localhost:8081',
     'http://127.0.0.1:8081',
   ]

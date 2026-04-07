@@ -11,7 +11,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE);
 
 function getCorsHeaders(req: Request) {
   const origin = req.headers.get('origin') || '';
-  const allowedOrigins = ['https://portfoliolite.tech', 'http://localhost:8081'];
+  const allowedOrigins = ['https://portfoliolite.tech', 'https://www.portfoliolite.tech', 'http://localhost:8081'];
   const isAllowed = allowedOrigins.includes(origin) || origin.startsWith('exp://');
 
   return {
