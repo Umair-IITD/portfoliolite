@@ -10,58 +10,67 @@
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
-const GITHUB_PAGES_URL = 'https://umair-iitd.github.io/portfoliolite/payment-success.html'
+const GITHUB_PAGES_URL = 'https://portfoliolite.tech/payment-success.html'
 
-const CORS_HEADERS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+function getCorsHeaders(req: Request) {
+  const origin = req.headers.get('origin') || ''
+  const allowedOrigins = [
+    'https://portfoliolite.tech',
+    'http://localhost:8081',
+    'http://127.0.0.1:8081',
+  ]
+  const isAllowed = allowedOrigins.includes(origin) || origin.startsWith('exp://') || origin.startsWith('expo-development-client://')
+
+  return {
+    'Access-Control-Allow-Origin': isAllowed ? origin : 'https://portfoliolite.tech',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-client-info',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  }
 }
 
 async function extractPaymentId(req: Request): Promise<string | null> {
   const url = new URL(req.url)
+  const allValues: string[] = []
 
-  // 1. Check GET query parameters first (standard Razorpay GET redirect)
-  const fromQuery = url.searchParams.get('razorpay_payment_id')
-    || url.searchParams.get('payment_id')
-  if (fromQuery) return fromQuery
+  // Collect all possible strings from query params
+  url.searchParams.forEach((val) => allValues.push(val))
 
-  // 2. Try POST body parsing (Razorpay sometimes POSTs with form data)
+  // Collect all possible strings from body if POST
   if (req.method === 'POST') {
     try {
       const contentType = req.headers.get('content-type') || ''
-
       if (contentType.includes('application/x-www-form-urlencoded')) {
-        // Standard HTML form POST
         const text = await req.text()
         const params = new URLSearchParams(text)
-        const fromForm = params.get('razorpay_payment_id') || params.get('payment_id')
-        if (fromForm) return fromForm
-
-        // Log what we received for debugging
-        console.log('[payment-success] Form body params:', text.substring(0, 200))
-
-      } else if (contentType.includes('multipart/form-data')) {
-        const form = await req.formData()
-        const fromForm = form.get('razorpay_payment_id')?.toString()
-          || form.get('payment_id')?.toString()
-        if (fromForm) return fromForm
-
+        params.forEach((val) => allValues.push(val))
       } else if (contentType.includes('application/json')) {
-        const body = await req.json().catch(() => ({}))
-        const fromJson = body?.razorpay_payment_id || body?.payment_id
-        if (fromJson) return fromJson
-
-      } else {
-        // Unknown content type - try parsing as URL-encoded form anyway
-        const text = await req.text()
-        console.log('[payment-success] Unknown content-type body:', text.substring(0, 200))
-        const params = new URLSearchParams(text)
-        const fromForm = params.get('razorpay_payment_id') || params.get('payment_id')
-        if (fromForm) return fromForm
+        const body = await req.json()
+        const flatten = (obj: any) => {
+          for (const k in obj) {
+            if (typeof obj[k] === 'string') allValues.push(obj[k])
+            else if (typeof obj[k] === 'object') flatten(obj[k])
+          }
+        }
+        flatten(body)
       }
     } catch (e) {
-      console.error('[payment-success] Body parse error:', e)
+      console.error('[payment-success] Body extract error:', e)
+    }
+  }
+
+  // 1. Prioritize known keys
+  const preferred = url.searchParams.get('razorpay_payment_id')
+    || url.searchParams.get('payment_id')
+    || url.searchParams.get('razorpay_payment_link_id')
+  if (preferred) return preferred
+
+  // 2. Brute-force: Look for anything starting with pay_ or plink_
+  for (const val of allValues) {
+    if (typeof val === 'string' && (val.startsWith('pay_') || val.startsWith('plink_'))) {
+      return val
     }
   }
 
@@ -91,23 +100,21 @@ async function lookupCode(paymentId: string): Promise<{ success: boolean; code?:
 }
 
 Deno.serve(async (req: Request) => {
-  // Handle CORS preflight
+  const corsHeaders = getCorsHeaders(req)
+
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: CORS_HEADERS })
+    return new Response(null, { status: 204, headers: corsHeaders })
   }
 
   const url = new URL(req.url)
   const mode = url.searchParams.get('mode')
 
-  // ── MODE 2: JSON API call from GitHub Pages JavaScript ──────────────────────
   if (mode === 'api') {
-    const paymentId = url.searchParams.get('razorpay_payment_id')
-      || url.searchParams.get('payment_id')
-
+    const paymentId = await extractPaymentId(req)
     if (!paymentId) {
       return new Response(JSON.stringify({ success: false, error: 'missing_payment_id' }), {
         status: 400,
-        headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
@@ -115,44 +122,22 @@ Deno.serve(async (req: Request) => {
     const status = result.success ? 200 : (result.error === 'pending' ? 202 : 500)
     return new Response(JSON.stringify(result), {
       status,
-      headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
 
-  // ── MODE 1: Browser redirect from Razorpay ──────────────────────────────────
-  // Extract payment ID from wherever Razorpay placed it
   const paymentId = await extractPaymentId(req)
-
-  console.log('[payment-success] Redirect received, payment_id:', paymentId)
-  console.log('[payment-success] Method:', req.method)
-  console.log('[payment-success] Query:', url.search)
-
   if (paymentId) {
-    // Redirect to GitHub Pages with the payment ID as a clean GET parameter
     const destination = `${GITHUB_PAGES_URL}?razorpay_payment_id=${encodeURIComponent(paymentId)}`
-    console.log('[payment-success] Redirecting to:', destination)
     return new Response(null, {
       status: 302,
-      headers: {
-        'Location': destination,
-        ...CORS_HEADERS,
-      },
+      headers: { 'Location': destination, ...corsHeaders },
     })
   }
-
-  // No payment ID found anywhere — redirect to GitHub Pages with error flag
-  // The page will show a helpful message
-  console.warn('[payment-success] No payment_id found in request. Dumping all params...')
-  const allParams: Record<string, string> = {}
-  url.searchParams.forEach((v, k) => { allParams[k] = v })
-  console.log('[payment-success] All query params:', JSON.stringify(allParams))
 
   const destination = `${GITHUB_PAGES_URL}?error=missing_id`
   return new Response(null, {
     status: 302,
-    headers: {
-      'Location': destination,
-      ...CORS_HEADERS,
-    },
+    headers: { 'Location': destination, ...corsHeaders },
   })
 })
