@@ -119,8 +119,8 @@ export default function BiometricGateScreen({
             <TouchableOpacity style={s.skipBtn} onPress={onSkip}>
                 <Text style={s.skipText}>
                     {isAvailable
-                    ? "Skip for now"
-                    : "Biometrics not available — Use Passcode"}
+                    ? "Use Device Passcode Instead"
+                    : "Use Device Passcode"}
                 </Text>
             </TouchableOpacity>
         </View>

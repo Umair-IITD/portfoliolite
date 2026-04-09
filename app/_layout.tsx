@@ -14,7 +14,7 @@ const LockOverlay = memo(({ isAvailable, authenticate }: { isAvailable: boolean,
       isAvailable={isAvailable}
       authenticate={authenticate}
       onAuthenticated={() => {}}
-      onSkip={() => {}}
+      onSkip={authenticate}
     />
   </View>
 ));

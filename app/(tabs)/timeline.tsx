@@ -191,8 +191,13 @@ export default function TimelineScreen() {
   const vals = data.map(d => d.value);
   const high = vals.length ? Math.max(...vals) : 0;
   const low  = vals.length ? Math.min(...vals) : 0;
-  const growth = high - low;
-  const growthPct = low > 0 ? ((growth / low) * 100).toFixed(1) : "0.0";
+
+  // Actual period change: last snapshot minus first snapshot (can be negative)
+  const firstVal  = vals.length ? vals[0] : 0;
+  const lastVal   = vals.length ? vals[vals.length - 1] : 0;
+  const growth    = lastVal - firstVal;
+  const isGrowthPositive = growth >= 0;
+  const growthPct = firstVal > 0 ? Math.abs((growth / firstVal) * 100).toFixed(1) : "0.0";
 
   // ─── Growth Velocity Logic ────────────────────────────────────
   const velocity = useMemo(() => {
@@ -256,8 +261,12 @@ export default function TimelineScreen() {
                     </View>
                 </View>
                 <View style={s.growthRow}>
-                    <Text style={s.growthValue}>+{formatINR(growth)}</Text>
-                    <Text style={s.growthPct}>▲ {growthPct}%</Text>
+                    <Text style={[s.growthValue, { color: isGrowthPositive ? C.green : "#EF4444" }]}>
+                        {isGrowthPositive ? "+" : "-"}{formatINR(Math.abs(growth))}
+                    </Text>
+                    <Text style={[s.growthPct, { color: isGrowthPositive ? C.green : "#EF4444" }]}>
+                        {isGrowthPositive ? "▲" : "▼"} {growthPct}%
+                    </Text>
                 </View>
             </View>
           </ScrollView>
