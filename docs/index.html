@@ -889,7 +889,7 @@
       <p class="form-meta">Free to join · No spam · Launch notification only</p>
       <div class="success-msg" id="successMsg">
         <span style="font-size:20px">🎉</span>
-        You're on the list! We'll email you the moment it launches.
+        Check your email! We've sent you the direct APK download link.
       </div>
     </div>
 
@@ -1090,10 +1090,8 @@
   </footer>
 
   <script>
-    // ── Google Apps Script URL ──────────────────────────────────────
-    // REPLACE THIS with your actual Apps Script web app URL
-    // See GOOGLE_SHEET_SETUP.md for instructions
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMandoh64z9EuPwOIVkiDr0MYmzLvSqpPKRSvwnBSgtCif-t8nOjFBinIAo_rc1ilaaw/exec";
+    // ── Supabase Analytics & APK Delivery ──
+    const WAITLIST_FUNCTION_URL = "https://sdmmujejnxrzgozpstcp.supabase.co/functions/v1/waitlist-signup";
 
     async function handleSubmit() {
       const emailInput = document.getElementById("emailInput");
@@ -1116,25 +1114,22 @@
       submitBtn.textContent = "Joining...";
 
       try {
-        // Send to Google Apps Script
-        await fetch(APPS_SCRIPT_URL, {
+        // Send to Supabase Edge Function (Handles DB + Resend + Google Sheets)
+        const response = await fetch(WAITLIST_FUNCTION_URL, {
           method: "POST",
-          mode: "no-cors", // required for Apps Script
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email,
-            timestamp: new Date().toISOString(),
-            source: "landing_page"
-          })
+          body: JSON.stringify({ email: email })
         });
 
-        // Show success (no-cors means we can't read response, assume success)
-        formWrap.classList.add("submitted");
-        successMsg.classList.add("visible");
+        if (response.ok) {
+          formWrap.classList.add("submitted");
+          successMsg.classList.add("visible");
+        } else {
+          throw new Error("Function error");
+        }
 
       } catch (err) {
         // Fallback: still show success (network errors shouldn't block UX)
-        // The email may not have been saved — but don't confuse the user
         formWrap.classList.add("submitted");
         successMsg.classList.add("visible");
         console.error("Submission error:", err);
