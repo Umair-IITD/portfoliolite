@@ -36,6 +36,13 @@ Engineered a secure, serverless bridge between **Razorpay** and **Supabase**.
 - **Static Assets**: Success pages are hosted on GitHub Pages with 100/100 performance scores, custom-domain mapped to `portfoliolite.tech`.
 - **Global Edge Network**: Leveraging Deno Deploy for low-latency response times globally.
 
+### 📧 4. Automated Beta Distribution
+Engineered a seamless user acquisition funnel for early adopters.
+- **Waitlist Logic**: Built a serverless "Waitlist-to-APK" pipeline using Supabase and Resend.
+- **Frictionless Delivery**: Upon waitlist signup, users instantly receive a tailored onboarding email containing a direct download link for the Android APK.
+- **Multi-Source Sync**: Automatically logs interested users in Supabase while cross-syncing data with existing Google Sheets via backend triggers.
+
+
 ---
 
 ## 🛠️ Tech Stack
