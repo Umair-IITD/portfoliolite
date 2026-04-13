@@ -2,7 +2,7 @@ import {
   View, Text, ScrollView, TouchableOpacity,
   StyleSheet, ActivityIndicator,
 } from "react-native";
-import { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import {

@@ -3,7 +3,7 @@ import { useFocusEffect } from "expo-router";
 import {
   Asset, AssetInput, AssetType,
   getAllAssets, insertAsset, updateAsset,
-  deleteAsset, saveSnapshot,
+  deleteAsset, saveSnapshot, hasSnapshotForToday,
 } from "../db/database";
 
 // ─── Constants ────────────────────────────────────────────────────
@@ -103,8 +103,8 @@ export function useAssets(): UseAssetsReturn {
       setAssets(data);
       setError(null);
 
-      // Save snapshot on load if there are assets
-      if (data.length > 0) {
+      // Save at most one snapshot per day to avoid bloating the snapshots table
+      if (data.length > 0 && !hasSnapshotForToday()) {
         const total     = calcNetWorth(data);
         const breakdown: Record<string, number> = {};
         for (const a of data) {

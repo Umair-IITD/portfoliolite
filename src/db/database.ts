@@ -238,13 +238,35 @@ export function setSetting(key: string, value: string): void {
 }
 
 // ─── Delete everything (for "Delete all data" in Settings) ────────
+// NOTE: Preserves settings (onboarding_complete, biometric_enabled) so the
+// user isn't forced through onboarding again and doesn't lose their lock preference.
 
 export function deleteAllData(): void {
   const database = getDb();
-  database.execSync("DELETE FROM assets; DELETE FROM snapshots; DELETE FROM settings;");
+  database.execSync("DELETE FROM assets; DELETE FROM snapshots;");
+}
+
+// ─── Snapshot deduplication helper ────────────────────────────────
+
+export function hasSnapshotForToday(): boolean {
+  const database = getDb();
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const row = database.getFirstSync(
+    "SELECT id FROM snapshots WHERE captured_at >= ?",
+    [todayStart.getTime()]
+  ) as { id: string } | null;
+  return row !== null;
 }
 
 // ─── CSV export ────────────────────────────────────────────────────
+
+// Escape a CSV field: wrap in quotes and double any internal quotes
+function csvField(value: string | number | null): string {
+  if (value === null || value === undefined) return '""';
+  const str = String(value).replace(/"/g, '""');
+  return `"${str}"`;
+}
 
 export function exportToCSV(): string {
   const assets = getAllAssets();
@@ -252,14 +274,14 @@ export function exportToCSV(): string {
   const rows   = assets.map((a) => {
     const val = (a.quantity * a.currentPrice).toFixed(2);
     return [
-      `"${a.name}"`,
-      a.type,
-      a.quantity,
-      a.buyPrice,
-      a.currentPrice,
-      val,
-      a.currency,
-      `"${a.notes ?? ""}"`,
+      csvField(a.name),
+      csvField(a.type),
+      csvField(a.quantity),
+      csvField(a.buyPrice),
+      csvField(a.currentPrice),
+      csvField(val),
+      csvField(a.currency),
+      csvField(a.notes ?? ""),
     ].join(",");
   });
   return [header, ...rows].join("\n");

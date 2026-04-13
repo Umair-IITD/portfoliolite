@@ -101,12 +101,17 @@ function InteractiveChart({ data }: { data: ChartPoint[] }) {
     setActiveIdx(closest);
   };
 
+  // Keep a stable ref to handleTouch so the PanResponder (created once) always
+  // calls the latest version even when `data` or `toX` change after a range switch.
+  const handleTouchRef = useRef(handleTouch);
+  handleTouchRef.current = handleTouch;
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder:  () => true,
-      onPanResponderGrant:   (e) => handleTouch(e.nativeEvent.locationX),
-      onPanResponderMove:    (e) => handleTouch(e.nativeEvent.locationX),
+      onPanResponderGrant:   (e) => handleTouchRef.current(e.nativeEvent.locationX),
+      onPanResponderMove:    (e) => handleTouchRef.current(e.nativeEvent.locationX),
       onPanResponderRelease: ()  => setActiveIdx(null),
     })
   ).current;

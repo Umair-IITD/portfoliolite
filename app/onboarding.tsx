@@ -1,7 +1,7 @@
 import {
   View, Text, StyleSheet, Dimensions,
   TouchableOpacity, ScrollView, NativeScrollEvent,
-  NativeSyntheticEvent, Image,
+  NativeSyntheticEvent,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";

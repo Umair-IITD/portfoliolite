@@ -3,7 +3,10 @@ const SUPABASE_SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RAZORPAY_SECRET  = Deno.env.get("RAZORPAY_WEBHOOK_SECRET")!;
 
 function generateCode(): string {
-  return Math.floor(10000000 + Math.random() * 90000000).toString();
+  // Use cryptographically secure random values instead of Math.random()
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return (10000000 + (array[0] % 90000000)).toString();
 }
 
 async function verifySignature(body: string, signature: string): Promise<boolean> {
@@ -131,7 +134,7 @@ Deno.serve(async (req: Request) => {
 
     if (!inserted) {
       console.error("DB Insert Failed after 3 attempts:", lastError);
-      return new Response(lastError, { status: 500, headers: corsHeaders });
+      return new Response("Internal server error", { status: 500, headers: corsHeaders });
     }
 
     console.log("[generate-code] Success! Code generated:", finalCode);

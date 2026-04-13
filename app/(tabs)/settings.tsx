@@ -7,7 +7,7 @@ import {
   Shield, ChevronRight, Info, Star, FileText, Download, Trash2,
 } from "lucide-react-native";
 import { useAssets } from "../../src/hooks/useAssets";
-import { deleteAllData } from "../../src/db/database";
+import { deleteAllData, exportToCSV } from "../../src/db/database";
 import { usePurchases } from "../../src/hooks/usePurchases";
 import { useRouter } from "expo-router";
 import * as FileSystem from "expo-file-system";
@@ -106,12 +106,7 @@ export default function SettingsScreen() {
     }
 
     try {
-      const header = "Type,Name,Quantity,Buy Price,Current Price,Value (INR)\n";
-      const rows = assets.map(a => 
-        `${a.type},${a.name},${a.quantity},${a.buyPrice},${a.currentPrice},${a.quantity * a.currentPrice}`
-      ).join("\n");
-      
-      const csv = header + rows;
+      const csv = exportToCSV();
       const fileUri = FileSystem.documentDirectory + "portfolio_export.csv";
       
       await FileSystem.writeAsStringAsync(fileUri, csv, { encoding: FileSystem.EncodingType.UTF8 });

@@ -1,11 +1,9 @@
 import React from "react";
-import { 
-  View, Text, TouchableOpacity, StyleSheet, 
-  Modal, Animated, Dimensions 
+import {
+  View, Text, TouchableOpacity, StyleSheet,
+  Modal,
 } from "react-native";
-import { Check, X, AlertCircle } from "lucide-react-native";
-
-const { height } = Dimensions.get("window");
+import { Check, AlertCircle } from "lucide-react-native";
 
 const C = {
   navy:   "#0A0F1E",

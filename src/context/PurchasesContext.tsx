@@ -62,7 +62,7 @@ export function PurchasesProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const redeemCode = useCallback(async (code: string): Promise<boolean> => {
-    if (!code || code.length !== 8) return false;
+    if (!code || code.length !== 8 || !/^\d{8}$/.test(code)) return false;
     setIsLoading(true);
     setError(null);
     try {
