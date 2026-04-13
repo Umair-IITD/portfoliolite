@@ -2,13 +2,21 @@
   "build": {
     "production": {
       "env": {
-        "NODE_ENV": "production"
+        "NODE_ENV": "production",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://sdmmujejnxrzgozpstcp.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkbW11amVqbnhyemdvenBzdGNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTI0MzIsImV4cCI6MjA4OTQ4ODQzMn0.UB1wOIf62Ail25ka2h3Ca41s91KtMRkElWwJ7FkYyvM",
+        "EXPO_PUBLIC_RAZORPAY_LINK": "https://rzp.io/rzp/peEEfV9j"
       }
     },
     "preview": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://sdmmujejnxrzgozpstcp.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkbW11amVqbnhyemdvenBzdGNwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTI0MzIsImV4cCI6MjA4OTQ4ODQzMn0.UB1wOIf62Ail25ka2h3Ca41s91KtMRkElWwJ7FkYyvM",
+        "EXPO_PUBLIC_RAZORPAY_LINK": "https://rzp.io/rzp/peEEfV9j"
       }
     }
   },
