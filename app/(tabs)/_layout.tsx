@@ -1,7 +1,14 @@
-import { Tabs } from "expo-router";
+import { Tabs, Redirect } from "expo-router";
 import { LayoutDashboard, List, Settings2, LineChart } from "lucide-react-native";
+import { getSetting } from "../../src/db/database";
 
 export default function TabsLayout() {
+  const done = getSetting("onboarding_complete");
+  
+  if (done !== "true") {
+    return <Redirect href="/onboarding" />;
+  }
+
   return (
     <Tabs
       screenOptions={{
